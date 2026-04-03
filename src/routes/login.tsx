@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router"
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router"
 import { useAuth } from "../providers/auth-provider"
 import { useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -26,6 +26,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const { login, isLoading } = useAuth()
+  const router = useRouter()
   const [adminId, setAdminId] = useState("")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
@@ -36,7 +37,10 @@ function LoginPage() {
     setError("")
 
     const success = await login(adminId, password)
-    if (!success) {
+    if (success) {
+      // Navigate to dashboard after successful login
+      router.navigate({ to: "/dashboard" })
+    } else {
       setError('Invalid credentials. Try password: "password"')
     }
   }
