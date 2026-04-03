@@ -1,6 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { mockMessages, mockMembers } from "../../lib/mock-data"
+import { mockMessages } from "../../lib/mock-data"
 import { useState } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/_authenticated/communications")({
   component: CommunicationsPage,
@@ -12,41 +18,51 @@ function CommunicationsPage() {
   >("members")
   const [selectedMessage, setSelectedMessage] = useState(mockMessages[0])
   const [replyText, setReplyText] = useState("")
+  const [mobileView, setMobileView] = useState<"inbox" | "chat" | "context">(
+    "inbox"
+  )
 
   const filteredMessages = mockMessages.filter((msg) => msg.type === activeTab)
 
   return (
-    <div className="-mx-8 -mt-8 h-[calc(100vh-140px)]">
+    <div className="-mx-4 -mt-4 h-[calc(100vh-100px)] sm:-mx-6 sm:-mt-6 sm:h-[calc(100vh-120px)] lg:-mx-8 lg:-mt-8 lg:h-[calc(100vh-140px)]">
       {/* Three Pane Layout */}
       <div className="flex h-full">
-        {/* Left Pane: Inbox List */}
-        <section className="flex w-[400px] flex-col border-r border-slate-200 bg-white dark:border-slate-700 dark:bg-[#0b1326]">
-          <div className="p-6 pb-4">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-extrabold tracking-tight text-[#191c1e] dark:text-white">
+        {/* Left Pane: Inbox List - Hidden on mobile when viewing chat */}
+        <section
+          className={cn(
+            "flex flex-col border-r border-slate-200 bg-white dark:border-slate-700 dark:bg-[#0b1326]",
+            "w-full lg:w-[350px] xl:w-[400px]",
+            mobileView !== "inbox" && "hidden lg:flex"
+          )}
+        >
+          <div className="p-4 pb-2 sm:p-6 sm:pb-4">
+            <div className="mb-4 flex items-center justify-between sm:mb-6">
+              <h2 className="text-xl font-extrabold tracking-tight text-[#191c1e] sm:text-2xl dark:text-white">
                 Messages
               </h2>
-              <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1e55be]/10 text-[#1e55be] transition-all hover:bg-[#1e55be] hover:text-white dark:bg-[#1e55be]/20 dark:text-[#b2c5ff] dark:hover:bg-[#1e55be]">
+              <Button size="icon" variant="outline" className="rounded-full">
                 <span className="material-symbols-outlined">edit_square</span>
-              </button>
+              </Button>
             </div>
 
             {/* Filter Tabs */}
-            <div className="mb-4 flex space-x-1 rounded-xl bg-slate-100 p-1.5 dark:bg-slate-800">
-              {(["members", "prospects", "support"] as const).map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`flex-1 rounded-lg py-2 text-xs font-bold transition-all ${
-                    activeTab === tab
-                      ? "bg-white text-[#1e55be] shadow-sm dark:bg-[#0b1326] dark:text-[#b2c5ff]"
-                      : "text-slate-500 hover:text-[#191c1e] dark:text-slate-400 dark:hover:text-white"
-                  }`}
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
-              ))}
-            </div>
+            <Tabs
+              value={activeTab}
+              onValueChange={(v) => setActiveTab(v as typeof activeTab)}
+            >
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="members" className="text-xs sm:text-sm">
+                  Members
+                </TabsTrigger>
+                <TabsTrigger value="prospects" className="text-xs sm:text-sm">
+                  Prospects
+                </TabsTrigger>
+                <TabsTrigger value="support" className="text-xs sm:text-sm">
+                  Support
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
 
           {/* Messages List */}
@@ -54,15 +70,18 @@ function CommunicationsPage() {
             {filteredMessages.map((message) => (
               <button
                 key={message.id}
-                onClick={() => setSelectedMessage(message)}
-                className={`w-full border-b border-slate-100 p-4 text-left transition-colors hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800/50 ${
-                  selectedMessage?.id === message.id
-                    ? "bg-slate-50 dark:bg-slate-800/50"
-                    : ""
-                }`}
+                onClick={() => {
+                  setSelectedMessage(message)
+                  setMobileView("chat")
+                }}
+                className={cn(
+                  "w-full border-b border-slate-100 p-3 text-left transition-colors hover:bg-slate-50 sm:p-4 dark:border-slate-700 dark:hover:bg-slate-800/50",
+                  selectedMessage?.id === message.id &&
+                    "bg-slate-50 dark:bg-slate-800/50"
+                )}
               >
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1e55be]/10 text-sm font-bold text-[#1e55be] dark:bg-[#1e55be]/20 dark:text-[#b2c5ff]">
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#1e55be]/10 text-xs font-bold text-[#1e55be] sm:h-10 sm:w-10 sm:text-sm dark:bg-[#1e55be]/20 dark:text-[#b2c5ff]">
                     {message.senderName
                       .split(" ")
                       .map((n) => n[0])
@@ -83,14 +102,14 @@ function CommunicationsPage() {
                     <p className="truncate text-sm text-slate-600 dark:text-slate-400">
                       {message.content}
                     </p>
-                    <div className="mt-2 flex items-center gap-2">
+                    <div className="mt-1 flex items-center gap-2 sm:mt-2">
                       {message.unread && (
                         <span className="h-2 w-2 rounded-full bg-[#1e55be]"></span>
                       )}
                       {message.priority === "urgent" && (
-                        <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-600 dark:bg-red-900/30 dark:text-red-400">
+                        <Badge variant="destructive" className="text-[10px]">
                           URGENT
-                        </span>
+                        </Badge>
                       )}
                     </div>
                   </div>
@@ -100,12 +119,26 @@ function CommunicationsPage() {
           </div>
         </section>
 
-        {/* Center Pane: Chat */}
-        <section className="flex flex-1 flex-col bg-[#f7f9fb] dark:bg-[#060e20]">
+        {/* Center Pane: Chat - Hidden on mobile when viewing inbox */}
+        <section
+          className={cn(
+            "flex flex-1 flex-col bg-[#f7f9fb] dark:bg-[#060e20]",
+            mobileView !== "chat" && "hidden lg:flex"
+          )}
+        >
           {/* Chat Header */}
-          <div className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4 dark:border-slate-700 dark:bg-[#0b1326]">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1e55be]/10 text-sm font-bold text-[#1e55be] dark:bg-[#1e55be]/20 dark:text-[#b2c5ff]">
+          <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 sm:px-6 sm:py-4 dark:border-slate-700 dark:bg-[#0b1326]">
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Back button on mobile */}
+              <Button
+                size="icon"
+                variant="ghost"
+                className="lg:hidden"
+                onClick={() => setMobileView("inbox")}
+              >
+                <span className="material-symbols-outlined">arrow_back</span>
+              </Button>
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1e55be]/10 text-xs font-bold text-[#1e55be] sm:h-10 sm:w-10 sm:text-sm dark:bg-[#1e55be]/20 dark:text-[#b2c5ff]">
                 {selectedMessage?.senderName
                   .split(" ")
                   .map((n) => n[0])
@@ -124,38 +157,47 @@ function CommunicationsPage() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button className="p-2 text-slate-400 transition-colors hover:text-[#1e55be] dark:hover:text-[#b2c5ff]">
+            <div className="flex items-center gap-1 sm:gap-2">
+              {/* Show context button on mobile */}
+              <Button
+                size="icon"
+                variant="ghost"
+                className="lg:hidden"
+                onClick={() => setMobileView("context")}
+              >
+                <span className="material-symbols-outlined">info</span>
+              </Button>
+              <Button size="icon" variant="ghost">
                 <span className="material-symbols-outlined">phone</span>
-              </button>
-              <button className="p-2 text-slate-400 transition-colors hover:text-[#1e55be] dark:hover:text-[#b2c5ff]">
+              </Button>
+              <Button size="icon" variant="ghost">
                 <span className="material-symbols-outlined">more_vert</span>
-              </button>
+              </Button>
             </div>
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 space-y-4 overflow-y-auto p-6">
+          <div className="flex-1 space-y-3 overflow-y-auto p-4 sm:space-y-4 sm:p-6">
             <div className="flex justify-center">
-              <span className="rounded-full bg-slate-200 px-3 py-1 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                Today
-              </span>
+              <Badge variant="secondary">Today</Badge>
             </div>
 
             {/* Received Message */}
-            <div className="flex items-start gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1e55be]/10 text-xs font-bold text-[#1e55be] dark:bg-[#1e55be]/20 dark:text-[#b2c5ff]">
+            <div className="flex items-start gap-2 sm:gap-3">
+              <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#1e55be]/10 text-xs font-bold text-[#1e55be] sm:h-8 sm:w-8 dark:bg-[#1e55be]/20 dark:text-[#b2c5ff]">
                 {selectedMessage?.senderName
                   .split(" ")
                   .map((n) => n[0])
                   .join("")}
               </div>
-              <div className="max-w-[70%]">
-                <div className="rounded-2xl rounded-tl-none bg-white p-4 shadow-sm dark:bg-[#0b1326]">
-                  <p className="text-sm text-[#191c1e] dark:text-white">
-                    {selectedMessage?.content}
-                  </p>
-                </div>
+              <div className="max-w-[80%] sm:max-w-[70%]">
+                <Card className="rounded-2xl rounded-tl-none border-none shadow-sm">
+                  <CardContent className="p-3 sm:p-4">
+                    <p className="text-sm text-[#191c1e] dark:text-white">
+                      {selectedMessage?.content}
+                    </p>
+                  </CardContent>
+                </Card>
                 <span className="mt-1 block text-xs text-slate-400">
                   {new Date(
                     selectedMessage?.timestamp || ""
@@ -168,19 +210,21 @@ function CommunicationsPage() {
             </div>
 
             {/* Reply Message */}
-            <div className="flex flex-row-reverse items-start gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#1e55be] to-[#003d9a]">
-                <span className="material-symbols-outlined text-sm text-white">
+            <div className="flex flex-row-reverse items-start gap-2 sm:gap-3">
+              <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1e55be] to-[#003d9a] sm:h-8 sm:w-8">
+                <span className="material-symbols-outlined text-xs text-white">
                   support_agent
                 </span>
               </div>
-              <div className="max-w-[70%]">
-                <div className="rounded-2xl rounded-tr-none bg-[#1e55be] p-4 text-white shadow-sm">
-                  <p className="text-sm">
-                    Thank you for reaching out. I&apos;ll be happy to help you
-                    with that. Let me check your account details.
-                  </p>
-                </div>
+              <div className="max-w-[80%] sm:max-w-[70%]">
+                <Card className="rounded-2xl rounded-tr-none border-none bg-[#1e55be] shadow-sm">
+                  <CardContent className="p-3 sm:p-4">
+                    <p className="text-sm text-white">
+                      Thank you for reaching out. I&apos;ll be happy to help you
+                      with that. Let me check your account details.
+                    </p>
+                  </CardContent>
+                </Card>
                 <span className="mt-1 block text-right text-xs text-slate-400">
                   10:35 AM
                 </span>
@@ -189,34 +233,52 @@ function CommunicationsPage() {
           </div>
 
           {/* Reply Input */}
-          <div className="border-t border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-[#0b1326]">
-            <div className="flex items-center gap-3">
-              <button className="p-2 text-slate-400 transition-colors hover:text-[#1e55be] dark:hover:text-[#b2c5ff]">
+          <div className="border-t border-slate-200 bg-white p-3 sm:p-4 dark:border-slate-700 dark:bg-[#0b1326]">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Button size="icon" variant="ghost" className="flex-shrink-0">
                 <span className="material-symbols-outlined">attach_file</span>
-              </button>
+              </Button>
               <div className="relative flex-1">
-                <input
+                <Input
                   type="text"
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
                   placeholder="Type your message..."
-                  className="w-full rounded-full border-none bg-slate-100 px-4 py-3 text-[#191c1e] focus:ring-2 focus:ring-[#1e55be]/20 dark:bg-slate-800 dark:text-white"
+                  className="rounded-full border-none bg-slate-100 pr-4 pl-4 focus-visible:ring-2 focus-visible:ring-[#1e55be]/20 dark:bg-slate-800"
                 />
               </div>
-              <button className="rounded-full bg-[#1e55be] p-3 text-white transition-colors hover:bg-[#003d9a]">
+              <Button
+                size="icon"
+                className="flex-shrink-0 rounded-full bg-[#1e55be] hover:bg-[#003d9a]"
+              >
                 <span className="material-symbols-outlined">send</span>
-              </button>
+              </Button>
             </div>
           </div>
         </section>
 
-        {/* Right Pane: Member Context */}
-        <section className="w-[300px] border-l border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-[#0b1326]">
+        {/* Right Pane: Member Context - Hidden on mobile and tablet */}
+        <section
+          className={cn(
+            "flex w-[280px] flex-col border-l border-slate-200 bg-white p-4 xl:w-[300px] xl:p-6 dark:border-slate-700 dark:bg-[#0b1326]",
+            mobileView !== "context" && "hidden xl:flex"
+          )}
+        >
+          {/* Back button on mobile */}
+          <Button
+            variant="ghost"
+            className="mb-4 self-start xl:hidden"
+            onClick={() => setMobileView("chat")}
+          >
+            <span className="material-symbols-outlined mr-2">arrow_back</span>
+            Back to chat
+          </Button>
+
           {selectedMessage?.type === "member" ? (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Member Profile */}
               <div className="text-center">
-                <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-[#1e55be]/10 text-2xl font-bold text-[#1e55be] dark:bg-[#1e55be]/20 dark:text-[#b2c5ff]">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-[#1e55be]/10 text-xl font-bold text-[#1e55be] sm:h-20 sm:w-20 sm:text-2xl dark:bg-[#1e55be]/20 dark:text-[#b2c5ff]">
                   {selectedMessage.senderName
                     .split(" ")
                     .map((n) => n[0])
@@ -228,44 +290,52 @@ function CommunicationsPage() {
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   Member since 2021
                 </p>
-                <span className="mt-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                <Badge className="mt-2 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                   Active Member
-                </span>
+                </Badge>
               </div>
 
               {/* Quick Stats */}
-              <div className="space-y-4">
-                <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/50">
-                  <p className="mb-1 text-xs tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                    Total Contributions
-                  </p>
-                  <p className="text-xl font-bold text-[#191c1e] dark:text-white">
-                    $12,500
-                  </p>
-                </div>
-                <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/50">
-                  <p className="mb-1 text-xs tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                    Active Loans
-                  </p>
-                  <p className="text-xl font-bold text-[#191c1e] dark:text-white">
-                    1
-                  </p>
-                </div>
-                <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/50">
-                  <p className="mb-1 text-xs tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                    Credit Score
-                  </p>
-                  <p className="text-xl font-bold text-green-600">745</p>
-                </div>
+              <div className="space-y-3">
+                <Card className="bg-slate-50 dark:bg-slate-800/50">
+                  <CardContent className="p-3 sm:p-4">
+                    <p className="mb-1 text-xs tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                      Total Contributions
+                    </p>
+                    <p className="text-lg font-bold text-[#191c1e] sm:text-xl dark:text-white">
+                      $12,500
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-slate-50 dark:bg-slate-800/50">
+                  <CardContent className="p-3 sm:p-4">
+                    <p className="mb-1 text-xs tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                      Active Loans
+                    </p>
+                    <p className="text-lg font-bold text-[#191c1e] sm:text-xl dark:text-white">
+                      1
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-slate-50 dark:bg-slate-800/50">
+                  <CardContent className="p-3 sm:p-4">
+                    <p className="mb-1 text-xs tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                      Credit Score
+                    </p>
+                    <p className="text-lg font-bold text-green-600 sm:text-xl">
+                      745
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Recent Activity */}
               <div>
-                <h4 className="mb-3 font-bold text-[#191c1e] dark:text-white">
+                <h4 className="mb-2 font-bold text-[#191c1e] sm:mb-3 dark:text-white">
                   Recent Activity
                 </h4>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 text-sm">
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="flex items-center gap-2 text-sm sm:gap-3">
                     <span className="material-symbols-outlined text-sm text-slate-400">
                       payments
                     </span>
@@ -276,7 +346,7 @@ function CommunicationsPage() {
                       2d ago
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 text-sm">
+                  <div className="flex items-center gap-2 text-sm sm:gap-3">
                     <span className="material-symbols-outlined text-sm text-slate-400">
                       account_balance
                     </span>
@@ -292,12 +362,12 @@ function CommunicationsPage() {
 
               {/* Actions */}
               <div className="space-y-2">
-                <button className="w-full rounded-lg bg-[#1e55be] py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#003d9a]">
+                <Button className="w-full bg-[#1e55be] hover:bg-[#003d9a]">
                   View Full Profile
-                </button>
-                <button className="w-full rounded-lg border border-slate-200 py-2.5 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">
+                </Button>
+                <Button variant="outline" className="w-full">
                   View Loan History
-                </button>
+                </Button>
               </div>
             </div>
           ) : (
