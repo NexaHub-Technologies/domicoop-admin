@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { TerminalIcon } from "@hugeicons/core-free-icons"
 
 export const Route = createFileRoute("/_authenticated/logs")({
   component: LogsPage,
@@ -7,9 +9,10 @@ export const Route = createFileRoute("/_authenticated/logs")({
 function LogsPage() {
   return (
     <div className="flex h-[60vh] flex-col items-center justify-center">
-      <span className="material-symbols-outlined mb-4 text-6xl text-slate-300 dark:text-slate-600">
-        terminal
-      </span>
+      <HugeiconsIcon
+        icon={TerminalIcon}
+        className="mb-4 h-16 w-16 text-slate-300 dark:text-slate-600"
+      />
       <h2 className="mb-2 text-2xl font-bold text-[#191c1e] dark:text-white">
         System Logs
       </h2>

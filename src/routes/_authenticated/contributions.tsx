@@ -17,6 +17,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Download04Icon,
+  MoneySend01Icon,
+  CalculatorIcon,
+  ArrowRight01Icon,
+} from "@hugeicons/core-free-icons"
 
 export const Route = createFileRoute("/_authenticated/contributions")({
   component: ContributionsPage,
@@ -41,9 +48,7 @@ function ContributionsPage() {
           </h2>
         </div>
         <Button variant="outline" className="self-start sm:self-auto">
-          <span className="material-symbols-outlined mr-2 text-sm">
-            download
-          </span>
+          <HugeiconsIcon icon={Download04Icon} className="mr-2 h-4 w-4" />
           Export Report
         </Button>
       </div>
@@ -160,9 +165,10 @@ function ContributionsPage() {
                   >
                     <div className="flex items-center gap-2 sm:gap-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1e55be]/10 sm:h-10 sm:w-10 dark:bg-[#1e55be]/20">
-                        <span className="material-symbols-outlined text-sm text-[#1e55be] dark:text-[#b2c5ff]">
-                          payments
-                        </span>
+                        <HugeiconsIcon
+                          icon={MoneySend01Icon}
+                          className="h-4 w-4 text-[#1e55be] dark:text-[#b2c5ff]"
+                        />
                       </div>
                       <div>
                         <p className="text-sm font-bold text-[#191c1e] dark:text-white">
@@ -193,9 +199,10 @@ function ContributionsPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#1e55be] dark:text-[#b2c5ff]">
-                  calculate
-                </span>
+                <HugeiconsIcon
+                  icon={CalculatorIcon}
+                  className="h-5 w-5 text-[#1e55be] dark:text-[#b2c5ff]"
+                />
                 <div>
                   <CardTitle className="text-lg sm:text-xl">
                     Dividend Engine
@@ -288,9 +295,7 @@ function ContributionsPage() {
 
               {/* Calculate Button */}
               <Button className="w-full bg-gradient-to-br from-[#1e55be] to-[#003d9a]">
-                <span className="material-symbols-outlined mr-2">
-                  calculate
-                </span>
+                <HugeiconsIcon icon={CalculatorIcon} className="mr-2 h-4 w-4" />
                 Calculate Distribution
               </Button>
             </CardContent>
@@ -336,6 +341,10 @@ function ContributionsPage() {
               </div>
               <Button variant="outline" className="mt-4 w-full">
                 View All Payables
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  className="ml-2 h-4 w-4"
+                />
               </Button>
             </CardContent>
           </Card>

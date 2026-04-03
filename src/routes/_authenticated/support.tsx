@@ -1,4 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Book01Icon,
+  Chatting01Icon,
+  Mail01Icon,
+} from "@hugeicons/core-free-icons"
 
 export const Route = createFileRoute("/_authenticated/support")({
   component: SupportPage,
@@ -18,9 +24,10 @@ function SupportPage() {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-[#0b1326]">
-          <span className="material-symbols-outlined mb-4 text-3xl text-[#1e55be] dark:text-[#b2c5ff]">
-            book
-          </span>
+          <HugeiconsIcon
+            icon={Book01Icon}
+            className="mb-4 h-8 w-8 text-[#1e55be] dark:text-[#b2c5ff]"
+          />
           <h3 className="mb-2 font-bold text-[#191c1e] dark:text-white">
             Documentation
           </h3>
@@ -30,9 +37,10 @@ function SupportPage() {
         </div>
 
         <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-[#0b1326]">
-          <span className="material-symbols-outlined mb-4 text-3xl text-[#1e55be] dark:text-[#b2c5ff]">
-            chat
-          </span>
+          <HugeiconsIcon
+            icon={Chatting01Icon}
+            className="mb-4 h-8 w-8 text-[#1e55be] dark:text-[#b2c5ff]"
+          />
           <h3 className="mb-2 font-bold text-[#191c1e] dark:text-white">
             Live Chat
           </h3>
@@ -42,9 +50,10 @@ function SupportPage() {
         </div>
 
         <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-[#0b1326]">
-          <span className="material-symbols-outlined mb-4 text-3xl text-[#1e55be] dark:text-[#b2c5ff]">
-            email
-          </span>
+          <HugeiconsIcon
+            icon={Mail01Icon}
+            className="mb-4 h-8 w-8 text-[#1e55be] dark:text-[#b2c5ff]"
+          />
           <h3 className="mb-2 font-bold text-[#191c1e] dark:text-white">
             Email Support
           </h3>

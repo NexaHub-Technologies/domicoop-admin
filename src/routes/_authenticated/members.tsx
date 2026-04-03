@@ -18,6 +18,15 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  UserAdd01Icon,
+  FilterHorizontalIcon,
+  PencilEdit01Icon,
+  ViewIcon,
+  Task01Icon,
+  Megaphone01Icon,
+} from "@hugeicons/core-free-icons"
 
 export const Route = createFileRoute("/_authenticated/members")({
   component: MembersPage,
@@ -66,7 +75,7 @@ function MembersPage() {
           </p>
         </div>
         <Button className="flex items-center gap-2 self-start bg-gradient-to-br from-[#1e55be] to-[#003d9a] text-white shadow-lg shadow-[#1e55be]/20 hover:brightness-110 sm:self-auto">
-          <span className="material-symbols-outlined text-sm">person_add</span>
+          <HugeiconsIcon icon={UserAdd01Icon} className="h-4 w-4" />
           Create New Member
         </Button>
       </div>
@@ -75,9 +84,10 @@ function MembersPage() {
       <Card className="p-3 sm:p-4">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-slate-500 sm:px-4 dark:text-slate-400">
-            <span className="material-symbols-outlined text-base sm:text-lg">
-              filter_list
-            </span>
+            <HugeiconsIcon
+              icon={FilterHorizontalIcon}
+              className="h-4 w-4 sm:h-5 sm:w-5"
+            />
             <span>Status:</span>
           </div>
           {["all", "active", "inactive", "pending"].map((status) => (
@@ -197,14 +207,13 @@ function MembersPage() {
                           params={{ memberId: member.id }}
                           className="p-1 text-slate-400 transition-colors hover:text-[#003d9a] sm:p-2 dark:hover:text-[#b2c5ff]"
                         >
-                          <span className="material-symbols-outlined text-lg">
-                            visibility
-                          </span>
+                          <HugeiconsIcon icon={ViewIcon} className="h-5 w-5" />
                         </Link>
                         <button className="p-1 text-slate-400 transition-colors hover:text-[#003d9a] sm:p-2 dark:hover:text-[#b2c5ff]">
-                          <span className="material-symbols-outlined text-lg">
-                            edit
-                          </span>
+                          <HugeiconsIcon
+                            icon={PencilEdit01Icon}
+                            className="h-5 w-5"
+                          />
                         </button>
                       </div>
                     </TableCell>
@@ -286,15 +295,14 @@ function MembersPage() {
             </p>
             <div className="space-y-2 sm:space-y-3">
               <Button className="w-full bg-white/10 text-white hover:bg-white/20">
-                <span className="material-symbols-outlined mr-2 text-sm">
-                  pending_actions
-                </span>
+                <HugeiconsIcon icon={Task01Icon} className="mr-2 h-4 w-4" />
                 Pending Applications (3)
               </Button>
               <Button className="w-full bg-white/10 text-white hover:bg-white/20">
-                <span className="material-symbols-outlined mr-2 text-sm">
-                  campaign
-                </span>
+                <HugeiconsIcon
+                  icon={Megaphone01Icon}
+                  className="mr-2 h-4 w-4"
+                />
                 Member Broadcast
               </Button>
             </div>

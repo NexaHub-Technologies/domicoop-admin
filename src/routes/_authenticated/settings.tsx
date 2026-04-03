@@ -20,6 +20,20 @@ import {
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { mockSystemSettings } from "../../lib/mock-data"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  SaveIcon,
+  Settings01Icon,
+  UserGroupIcon,
+  MoneySend01Icon,
+  SecurityIcon,
+  CommandIcon,
+  Image01Icon,
+  Shield01Icon,
+  BankIcon,
+  Clock01Icon,
+  Analytics01Icon,
+} from "@hugeicons/core-free-icons"
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
@@ -48,7 +62,7 @@ function SettingsPage() {
             size="sm"
             className="bg-gradient-to-br from-[#1e55be] to-[#003d9a] text-xs text-white sm:text-sm"
           >
-            <span className="material-symbols-outlined mr-1 text-sm">save</span>
+            <HugeiconsIcon icon={SaveIcon} className="mr-1 h-4 w-4" />
             Save Settings
           </Button>
         </div>
@@ -61,45 +75,50 @@ function SettingsPage() {
             value="general"
             className="data-[state=active]:bg-[#1e55be]/10 data-[state=active]:text-[#1e55be] dark:data-[state=active]:bg-[#1e55be]/20 dark:data-[state=active]:text-[#b2c5ff]"
           >
-            <span className="material-symbols-outlined mr-1 text-sm sm:mr-2">
-              settings
-            </span>
+            <HugeiconsIcon
+              icon={Settings01Icon}
+              className="mr-1 h-4 w-4 sm:mr-2"
+            />
             <span className="hidden sm:inline">General</span>
           </TabsTrigger>
           <TabsTrigger
             value="members"
             className="data-[state=active]:bg-[#1e55be]/10 data-[state=active]:text-[#1e55be] dark:data-[state=active]:bg-[#1e55be]/20 dark:data-[state=active]:text-[#b2c5ff]"
           >
-            <span className="material-symbols-outlined mr-1 text-sm sm:mr-2">
-              group
-            </span>
+            <HugeiconsIcon
+              icon={UserGroupIcon}
+              className="mr-1 h-4 w-4 sm:mr-2"
+            />
             <span className="hidden sm:inline">Members</span>
           </TabsTrigger>
           <TabsTrigger
             value="financial"
             className="data-[state=active]:bg-[#1e55be]/10 data-[state=active]:text-[#1e55be] dark:data-[state=active]:bg-[#1e55be]/20 dark:data-[state=active]:text-[#b2c5ff]"
           >
-            <span className="material-symbols-outlined mr-1 text-sm sm:mr-2">
-              payments
-            </span>
+            <HugeiconsIcon
+              icon={MoneySend01Icon}
+              className="mr-1 h-4 w-4 sm:mr-2"
+            />
             <span className="hidden sm:inline">Financial</span>
           </TabsTrigger>
           <TabsTrigger
             value="security"
             className="data-[state=active]:bg-[#1e55be]/10 data-[state=active]:text-[#1e55be] dark:data-[state=active]:bg-[#1e55be]/20 dark:data-[state=active]:text-[#b2c5ff]"
           >
-            <span className="material-symbols-outlined mr-1 text-sm sm:mr-2">
-              security
-            </span>
+            <HugeiconsIcon
+              icon={SecurityIcon}
+              className="mr-1 h-4 w-4 sm:mr-2"
+            />
             <span className="hidden sm:inline">Security</span>
           </TabsTrigger>
           <TabsTrigger
             value="integrations"
             className="data-[state=active]:bg-[#1e55be]/10 data-[state=active]:text-[#1e55be] dark:data-[state=active]:bg-[#1e55be]/20 dark:data-[state=active]:text-[#b2c5ff]"
           >
-            <span className="material-symbols-outlined mr-1 text-sm sm:mr-2">
-              integration_instructions
-            </span>
+            <HugeiconsIcon
+              icon={CommandIcon}
+              className="mr-1 h-4 w-4 sm:mr-2"
+            />
             <span className="hidden sm:inline">Integrations</span>
           </TabsTrigger>
         </TabsList>
@@ -154,9 +173,10 @@ function SettingsPage() {
                 <Label>Organization Logo</Label>
                 <div className="flex items-center gap-4">
                   <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-slate-100 sm:h-16 sm:w-16 dark:bg-slate-800">
-                    <span className="material-symbols-outlined text-2xl text-slate-400 sm:text-3xl">
-                      image
-                    </span>
+                    <HugeiconsIcon
+                      icon={Image01Icon}
+                      className="h-6 w-6 text-slate-400 sm:h-8 sm:w-8"
+                    />
                   </div>
                   <Button variant="outline" size="sm">
                     Upload New Logo
@@ -434,9 +454,10 @@ function SettingsPage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between rounded-lg bg-slate-50 p-3 sm:p-4 dark:bg-slate-800/50">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <span className="material-symbols-outlined text-[#1e55be] dark:text-[#b2c5ff]">
-                        shield
-                      </span>
+                      <HugeiconsIcon
+                        icon={Shield01Icon}
+                        className="h-5 w-5 text-[#1e55be] dark:text-[#b2c5ff]"
+                      />
                       <div>
                         <p className="font-medium text-[#191c1e] dark:text-white">
                           Super Administrator
@@ -452,9 +473,10 @@ function SettingsPage() {
                   </div>
                   <div className="flex items-center justify-between rounded-lg bg-slate-50 p-3 sm:p-4 dark:bg-slate-800/50">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <span className="material-symbols-outlined text-slate-400">
-                        account_balance
-                      </span>
+                      <HugeiconsIcon
+                        icon={BankIcon}
+                        className="h-5 w-5 text-slate-400"
+                      />
                       <div>
                         <p className="font-medium text-[#191c1e] dark:text-white">
                           Financial Auditor
@@ -504,7 +526,7 @@ function SettingsPage() {
                     Active
                   </span>
                   <Button size="icon" variant="ghost">
-                    <span className="material-symbols-outlined">settings</span>
+                    <HugeiconsIcon icon={Settings01Icon} className="h-5 w-5" />
                   </Button>
                 </div>
               </div>
@@ -529,7 +551,7 @@ function SettingsPage() {
                     Active
                   </span>
                   <Button size="icon" variant="ghost">
-                    <span className="material-symbols-outlined">settings</span>
+                    <HugeiconsIcon icon={Settings01Icon} className="h-5 w-5" />
                   </Button>
                 </div>
               </div>
@@ -542,9 +564,10 @@ function SettingsPage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between rounded-lg bg-slate-50 p-3 sm:p-4 dark:bg-slate-800/50">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <span className="material-symbols-outlined text-slate-400">
-                        schedule
-                      </span>
+                      <HugeiconsIcon
+                        icon={Clock01Icon}
+                        className="h-5 w-5 text-slate-400"
+                      />
                       <div>
                         <p className="font-medium text-[#191c1e] dark:text-white">
                           Daily Backup
@@ -560,9 +583,10 @@ function SettingsPage() {
                   </div>
                   <div className="flex items-center justify-between rounded-lg bg-slate-50 p-3 sm:p-4 dark:bg-slate-800/50">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <span className="material-symbols-outlined text-slate-400">
-                        assessment
-                      </span>
+                      <HugeiconsIcon
+                        icon={Analytics01Icon}
+                        className="h-5 w-5 text-slate-400"
+                      />
                       <div>
                         <p className="font-medium text-[#191c1e] dark:text-white">
                           Weekly Report

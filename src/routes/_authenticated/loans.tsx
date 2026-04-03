@@ -11,6 +11,14 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Add01Icon,
+  BankIcon,
+  MoneySend01Icon,
+  Task01Icon,
+  DropletIcon,
+} from "@hugeicons/core-free-icons"
 
 export const Route = createFileRoute("/_authenticated/loans")({
   component: LoansPage,
@@ -38,7 +46,7 @@ function LoansPage() {
           </h2>
         </div>
         <Button className="flex items-center gap-2 self-start bg-gradient-to-br from-[#1e55be] to-[#003d9a] text-white shadow-md transition-transform active:scale-95 sm:self-auto">
-          <span className="material-symbols-outlined text-sm">add</span>
+          <HugeiconsIcon icon={Add01Icon} className="h-4 w-4" />
           New Loan Application
         </Button>
       </div>
@@ -49,9 +57,10 @@ function LoansPage() {
           <CardContent className="p-4 sm:p-6">
             <div className="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-[#1e55be]/5 blur-2xl dark:bg-[#1e55be]/10"></div>
             <div className="mb-3 flex items-start justify-between sm:mb-4">
-              <span className="material-symbols-outlined text-2xl text-[#1e55be] sm:text-3xl dark:text-[#b2c5ff]">
-                account_balance
-              </span>
+              <HugeiconsIcon
+                icon={BankIcon}
+                className="h-6 w-6 text-[#1e55be] sm:h-8 sm:w-8 dark:text-[#b2c5ff]"
+              />
               <span className="text-xs font-bold text-green-600">+8.2%</span>
             </div>
             <p className="mb-1 text-xs font-medium text-slate-500 sm:text-sm dark:text-slate-400">
@@ -67,9 +76,10 @@ function LoansPage() {
           <CardContent className="p-4 sm:p-6">
             <div className="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-green-500/5 blur-2xl dark:bg-green-500/10"></div>
             <div className="mb-3 flex items-start justify-between sm:mb-4">
-              <span className="material-symbols-outlined text-2xl text-green-600 sm:text-3xl">
-                payments
-              </span>
+              <HugeiconsIcon
+                icon={MoneySend01Icon}
+                className="h-6 w-6 text-green-600 sm:h-8 sm:w-8"
+              />
               <span className="text-xs font-bold text-green-600">+12.5%</span>
             </div>
             <p className="mb-1 text-xs font-medium text-slate-500 sm:text-sm dark:text-slate-400">
@@ -85,9 +95,10 @@ function LoansPage() {
           <CardContent className="p-4 sm:p-6">
             <div className="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-amber-500/5 blur-2xl dark:bg-amber-500/10"></div>
             <div className="mb-3 flex items-start justify-between sm:mb-4">
-              <span className="material-symbols-outlined text-2xl text-amber-600 sm:text-3xl">
-                pending_actions
-              </span>
+              <HugeiconsIcon
+                icon={Task01Icon}
+                className="h-6 w-6 text-amber-600 sm:h-8 sm:w-8"
+              />
               <Badge
                 variant="secondary"
                 className="bg-amber-100 text-[10px] text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
@@ -297,7 +308,7 @@ function LoansPage() {
                 <CardTitle className="text-base text-white sm:text-lg">
                   Liquidity Health
                 </CardTitle>
-                <span className="material-symbols-outlined">water_drop</span>
+                <HugeiconsIcon icon={DropletIcon} className="h-5 w-5" />
               </div>
             </CardHeader>
             <CardContent>

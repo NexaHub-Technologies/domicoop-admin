@@ -1,5 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { mockMembers } from "../../../lib/mock-data"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  ArrowLeft01Icon,
+  UserRemove01Icon,
+  MoneySend01Icon,
+  BankIcon,
+  Gif01Icon,
+} from "@hugeicons/core-free-icons"
 
 export const Route = createFileRoute("/_authenticated/members/$memberId")({
   component: MemberDetailPage,
@@ -12,9 +20,10 @@ function MemberDetailPage() {
   if (!member) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center">
-        <span className="material-symbols-outlined mb-4 text-6xl text-slate-300 dark:text-slate-600">
-          person_off
-        </span>
+        <HugeiconsIcon
+          icon={UserRemove01Icon}
+          className="mb-4 h-16 w-16 text-slate-300 dark:text-slate-600"
+        />
         <h2 className="mb-2 text-2xl font-bold text-[#191c1e] dark:text-white">
           Member Not Found
         </h2>
@@ -33,7 +42,7 @@ function MemberDetailPage() {
           onClick={() => window.history.back()}
           className="p-2 text-slate-500 transition-colors hover:text-[#1e55be] dark:text-slate-400 dark:hover:text-[#b2c5ff]"
         >
-          <span className="material-symbols-outlined">arrow_back</span>
+          <HugeiconsIcon icon={ArrowLeft01Icon} className="h-6 w-6" />
         </button>
         <div>
           <span className="mb-1 block text-xs font-bold tracking-[0.2em] text-[#003d9a] uppercase dark:text-[#b2c5ff]">
@@ -149,9 +158,10 @@ function MemberDetailPage() {
             <div className="space-y-4">
               <div className="flex items-center gap-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-800/50">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                  <span className="material-symbols-outlined text-sm text-green-600">
-                    payments
-                  </span>
+                  <HugeiconsIcon
+                    icon={MoneySend01Icon}
+                    className="h-5 w-5 text-green-600"
+                  />
                 </div>
                 <div className="flex-1">
                   <p className="font-medium text-[#191c1e] dark:text-white">
@@ -165,9 +175,10 @@ function MemberDetailPage() {
               </div>
               <div className="flex items-center gap-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-800/50">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1e55be]/10 dark:bg-[#1e55be]/20">
-                  <span className="material-symbols-outlined text-sm text-[#1e55be] dark:text-[#b2c5ff]">
-                    account_balance
-                  </span>
+                  <HugeiconsIcon
+                    icon={BankIcon}
+                    className="h-5 w-5 text-[#1e55be] dark:text-[#b2c5ff]"
+                  />
                 </div>
                 <div className="flex-1">
                   <p className="font-medium text-[#191c1e] dark:text-white">
@@ -181,9 +192,10 @@ function MemberDetailPage() {
               </div>
               <div className="flex items-center gap-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-800/50">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
-                  <span className="material-symbols-outlined text-sm text-amber-600">
-                    redeem
-                  </span>
+                  <HugeiconsIcon
+                    icon={Gif01Icon}
+                    className="h-5 w-5 text-amber-600"
+                  />
                 </div>
                 <div className="flex-1">
                   <p className="font-medium text-[#191c1e] dark:text-white">

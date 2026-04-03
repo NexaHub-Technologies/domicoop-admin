@@ -28,6 +28,18 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { Bar, BarChart, XAxis, YAxis, ResponsiveContainer } from "recharts"
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
+import {
+  UserGroupIcon,
+  MoneySend01Icon,
+  Task01Icon,
+  Message02Icon,
+  FilterHorizontalIcon,
+  ArrowRight01Icon,
+  AuctionIcon,
+  PencilEdit01Icon,
+  ViewIcon,
+} from "@hugeicons/core-free-icons"
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
@@ -66,28 +78,27 @@ function DashboardPage() {
       {/* Key Stats Grid */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
         <StatCard
-          icon="group"
+          icon={UserGroupIcon}
           label="Total Members"
           value={dashboardStats.totalMembers.toLocaleString()}
           trend={`+${dashboardStats.memberGrowth}%`}
           trendType="positive"
         />
         <StatCard
-          icon="payments"
+          icon={MoneySend01Icon}
           label="Total Contributions"
           value={`$${(dashboardStats.totalContributions / 1000000).toFixed(1)}M`}
           trend={`+${dashboardStats.contributionGrowth}%`}
           trendType="positive"
         />
         <StatCard
-          icon="pending_actions"
+          icon={Task01Icon}
           label="Pending Loans"
           value={dashboardStats.pendingLoans.toString()}
           badge="URGENT"
-          badgeType="urgent"
         />
         <StatCard
-          icon="mail"
+          icon={Message02Icon}
           label="Active Correspondence"
           value={dashboardStats.activeCorrespondence.toString()}
           subLabel="Live"
@@ -184,9 +195,7 @@ function DashboardPage() {
             </div>
             <button className="mt-4 flex items-center justify-center text-sm font-bold text-[#003d9a] transition-all hover:underline sm:mt-6 dark:text-[#b2c5ff]">
               View Full Logs
-              <span className="material-symbols-outlined ml-1 text-sm">
-                arrow_forward
-              </span>
+              <HugeiconsIcon icon={ArrowRight01Icon} className="ml-1 h-4 w-4" />
             </button>
           </CardContent>
         </Card>
@@ -199,9 +208,10 @@ function DashboardPage() {
           <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle className="text-lg sm:text-xl">Recent Members</CardTitle>
             <div className="relative">
-              <span className="material-symbols-outlined absolute top-1/2 left-2 -translate-y-1/2 text-xs text-slate-400">
-                filter_list
-              </span>
+              <HugeiconsIcon
+                icon={FilterHorizontalIcon}
+                className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 text-slate-400"
+              />
               <select className="rounded-lg border-none bg-slate-50 py-2 pr-4 pl-8 text-xs font-bold text-[#191c1e] focus:ring-1 focus:ring-[#1e55be]/40 dark:bg-slate-800 dark:text-white">
                 <option>Status: All</option>
                 <option>Active</option>
@@ -285,14 +295,16 @@ function DashboardPage() {
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
                           <button className="p-1 text-slate-400 transition-colors hover:text-[#003d9a] sm:p-2 dark:hover:text-[#b2c5ff]">
-                            <span className="material-symbols-outlined text-lg">
-                              edit
-                            </span>
+                            <HugeiconsIcon
+                              icon={PencilEdit01Icon}
+                              className="h-5 w-5"
+                            />
                           </button>
                           <button className="p-1 text-slate-400 transition-colors hover:text-[#003d9a] sm:p-2 dark:hover:text-[#b2c5ff]">
-                            <span className="material-symbols-outlined text-lg">
-                              visibility
-                            </span>
+                            <HugeiconsIcon
+                              icon={ViewIcon}
+                              className="h-5 w-5"
+                            />
                           </button>
                         </div>
                       </TableCell>
@@ -308,9 +320,10 @@ function DashboardPage() {
         <Card className="flex flex-col justify-between bg-slate-100 dark:bg-[#0b1326]">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#9b3e00]">
-                gavel
-              </span>
+              <HugeiconsIcon
+                icon={AuctionIcon}
+                className="h-5 w-5 text-[#9b3e00]"
+              />
               <CardTitle className="text-base sm:text-lg">
                 Queue: Loans
               </CardTitle>
@@ -374,16 +387,16 @@ function StatCard({
   trend,
   trendType,
   badge,
-  badgeType,
+
   subLabel,
 }: {
-  icon: string
+  icon: IconSvgElement
   label: string
   value: string
   trend?: string
   trendType?: "positive" | "negative"
   badge?: string
-  badgeType?: "urgent"
+
   subLabel?: string
 }) {
   return (
@@ -391,9 +404,10 @@ function StatCard({
       <CardContent className="p-4 sm:p-6">
         <div className="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-[#1e55be]/5 blur-2xl transition-all group-hover:bg-[#1e55be]/10 dark:bg-[#1e55be]/10 dark:group-hover:bg-[#1e55be]/20"></div>
         <div className="mb-3 flex items-start justify-between sm:mb-4">
-          <span className="material-symbols-outlined text-2xl text-[#1e55be] sm:text-3xl dark:text-[#b2c5ff]">
-            {icon}
-          </span>
+          <HugeiconsIcon
+            icon={icon}
+            className="h-6 w-6 text-[#1e55be] sm:h-8 sm:w-8 dark:text-[#b2c5ff]"
+          />
           {trend && (
             <span
               className={

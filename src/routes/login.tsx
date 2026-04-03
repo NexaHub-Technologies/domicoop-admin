@@ -1,6 +1,18 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router"
+import { createFileRoute, redirect } from "@tanstack/react-router"
 import { useAuth } from "../providers/auth-provider"
 import { useState } from "react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  HelpCircleIcon,
+  InformationCircleIcon,
+  BankIcon,
+  UserIcon,
+  LockIcon,
+  ViewIcon,
+  SecurityIcon,
+  Login01Icon,
+  RefreshIcon,
+} from "@hugeicons/core-free-icons"
 
 export const Route = createFileRoute("/login")({
   beforeLoad: ({ context }) => {
@@ -37,11 +49,11 @@ function LoginPage() {
           Financial Archive
         </div>
         <div className="flex items-center gap-6">
-          <button className="material-symbols-outlined text-[#191c1e] transition-colors duration-200 hover:text-[#1e55be] dark:text-white dark:hover:text-[#b2c5ff]">
-            help_outline
+          <button className="text-[#191c1e] transition-colors duration-200 hover:text-[#1e55be] dark:text-white dark:hover:text-[#b2c5ff]">
+            <HugeiconsIcon icon={HelpCircleIcon} className="h-6 w-6" />
           </button>
-          <button className="material-symbols-outlined text-[#191c1e] transition-colors duration-200 hover:text-[#1e55be] dark:text-white dark:hover:text-[#b2c5ff]">
-            info
+          <button className="text-[#191c1e] transition-colors duration-200 hover:text-[#1e55be] dark:text-white dark:hover:text-[#b2c5ff]">
+            <HugeiconsIcon icon={InformationCircleIcon} className="h-6 w-6" />
           </button>
         </div>
       </header>
@@ -52,9 +64,10 @@ function LoginPage() {
           {/* Logo */}
           <div className="flex flex-col items-center space-y-2 text-center">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-[#e0e3e5] dark:bg-[#1e293b]">
-              <span className="material-symbols-outlined text-4xl text-[#1e55be] dark:text-[#b2c5ff]">
-                account_balance
-              </span>
+              <HugeiconsIcon
+                icon={BankIcon}
+                className="h-8 w-8 text-[#1e55be] dark:text-[#b2c5ff]"
+              />
             </div>
             <h1 className="text-[1.5rem] font-bold tracking-tight text-[#191c1e] dark:text-white">
               DOMICOP Administration
@@ -74,9 +87,10 @@ function LoginPage() {
                   Admin ID
                 </label>
                 <div className="relative">
-                  <span className="material-symbols-outlined absolute top-1/2 left-4 -translate-y-1/2 text-slate-400">
-                    badge
-                  </span>
+                  <HugeiconsIcon
+                    icon={UserIcon}
+                    className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-slate-400"
+                  />
                   <input
                     type="text"
                     value={adminId}
@@ -101,9 +115,10 @@ function LoginPage() {
                   </a>
                 </div>
                 <div className="relative">
-                  <span className="material-symbols-outlined absolute top-1/2 left-4 -translate-y-1/2 text-slate-400">
-                    lock
-                  </span>
+                  <HugeiconsIcon
+                    icon={LockIcon}
+                    className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-slate-400"
+                  />
                   <input
                     type="password"
                     value={password}
@@ -113,9 +128,9 @@ function LoginPage() {
                   />
                   <button
                     type="button"
-                    className="material-symbols-outlined absolute top-1/2 right-4 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                    className="absolute top-1/2 right-4 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
                   >
-                    visibility
+                    <HugeiconsIcon icon={ViewIcon} className="h-5 w-5" />
                   </button>
                 </div>
               </div>
@@ -145,15 +160,14 @@ function LoginPage() {
                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-br from-[#003d9a] to-[#1e55be] py-4 font-bold text-white shadow-lg transition-all duration-200 hover:opacity-90 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isLoading ? (
-                  <span className="material-symbols-outlined animate-spin">
-                    refresh
-                  </span>
+                  <HugeiconsIcon
+                    icon={RefreshIcon}
+                    className="h-5 w-5 animate-spin"
+                  />
                 ) : (
                   <>
                     Sign In
-                    <span className="material-symbols-outlined text-xl">
-                      login
-                    </span>
+                    <HugeiconsIcon icon={Login01Icon} className="h-5 w-5" />
                   </>
                 )}
               </button>
@@ -162,12 +176,10 @@ function LoginPage() {
 
           {/* Security Notice */}
           <div className="flex items-center justify-center gap-3 rounded-lg bg-[#f0f2f5] px-6 py-4 dark:bg-[#0b1326]">
-            <span
-              className="material-symbols-outlined text-[#1e55be] dark:text-[#b2c5ff]"
-              style={{ fontVariationSettings: "'FILL' 1" }}
-            >
-              security
-            </span>
+            <HugeiconsIcon
+              icon={SecurityIcon}
+              className="h-5 w-5 text-[#1e55be] dark:text-[#b2c5ff]"
+            />
             <p className="text-[0.6875rem] leading-relaxed tracking-widest text-slate-500 uppercase dark:text-slate-400">
               End-to-End Encrypted Session
             </p>

@@ -7,6 +7,19 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Edit01Icon,
+  ArrowLeft01Icon,
+  InformationCircleIcon,
+  TelephoneIcon,
+  MoreVerticalIcon,
+  CustomerService01Icon,
+  Attachment01Icon,
+  SentIcon,
+  BankIcon,
+  MoneySend01Icon,
+} from "@hugeicons/core-free-icons"
 
 export const Route = createFileRoute("/_authenticated/communications")({
   component: CommunicationsPage,
@@ -42,7 +55,7 @@ function CommunicationsPage() {
                 Messages
               </h2>
               <Button size="icon" variant="outline" className="rounded-full">
-                <span className="material-symbols-outlined">edit_square</span>
+                <HugeiconsIcon icon={Edit01Icon} className="h-5 w-5" />
               </Button>
             </div>
 
@@ -136,7 +149,7 @@ function CommunicationsPage() {
                 className="lg:hidden"
                 onClick={() => setMobileView("inbox")}
               >
-                <span className="material-symbols-outlined">arrow_back</span>
+                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5" />
               </Button>
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1e55be]/10 text-xs font-bold text-[#1e55be] sm:h-10 sm:w-10 sm:text-sm dark:bg-[#1e55be]/20 dark:text-[#b2c5ff]">
                 {selectedMessage?.senderName
@@ -165,13 +178,16 @@ function CommunicationsPage() {
                 className="lg:hidden"
                 onClick={() => setMobileView("context")}
               >
-                <span className="material-symbols-outlined">info</span>
+                <HugeiconsIcon
+                  icon={InformationCircleIcon}
+                  className="h-5 w-5"
+                />
               </Button>
               <Button size="icon" variant="ghost">
-                <span className="material-symbols-outlined">phone</span>
+                <HugeiconsIcon icon={TelephoneIcon} className="h-5 w-5" />
               </Button>
               <Button size="icon" variant="ghost">
-                <span className="material-symbols-outlined">more_vert</span>
+                <HugeiconsIcon icon={MoreVerticalIcon} className="h-5 w-5" />
               </Button>
             </div>
           </div>
@@ -212,9 +228,10 @@ function CommunicationsPage() {
             {/* Reply Message */}
             <div className="flex flex-row-reverse items-start gap-2 sm:gap-3">
               <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1e55be] to-[#003d9a] sm:h-8 sm:w-8">
-                <span className="material-symbols-outlined text-xs text-white">
-                  support_agent
-                </span>
+                <HugeiconsIcon
+                  icon={CustomerService01Icon}
+                  className="h-4 w-4 text-white"
+                />
               </div>
               <div className="max-w-[80%] sm:max-w-[70%]">
                 <Card className="rounded-2xl rounded-tr-none border-none bg-[#1e55be] shadow-sm">
@@ -236,7 +253,7 @@ function CommunicationsPage() {
           <div className="border-t border-slate-200 bg-white p-3 sm:p-4 dark:border-slate-700 dark:bg-[#0b1326]">
             <div className="flex items-center gap-2 sm:gap-3">
               <Button size="icon" variant="ghost" className="flex-shrink-0">
-                <span className="material-symbols-outlined">attach_file</span>
+                <HugeiconsIcon icon={Attachment01Icon} className="h-5 w-5" />
               </Button>
               <div className="relative flex-1">
                 <Input
@@ -251,7 +268,7 @@ function CommunicationsPage() {
                 size="icon"
                 className="flex-shrink-0 rounded-full bg-[#1e55be] hover:bg-[#003d9a]"
               >
-                <span className="material-symbols-outlined">send</span>
+                <HugeiconsIcon icon={SentIcon} className="h-5 w-5" />
               </Button>
             </div>
           </div>
@@ -270,7 +287,7 @@ function CommunicationsPage() {
             className="mb-4 self-start xl:hidden"
             onClick={() => setMobileView("chat")}
           >
-            <span className="material-symbols-outlined mr-2">arrow_back</span>
+            <HugeiconsIcon icon={ArrowLeft01Icon} className="mr-2 h-4 w-4" />
             Back to chat
           </Button>
 
@@ -336,9 +353,10 @@ function CommunicationsPage() {
                 </h4>
                 <div className="space-y-2 sm:space-y-3">
                   <div className="flex items-center gap-2 text-sm sm:gap-3">
-                    <span className="material-symbols-outlined text-sm text-slate-400">
-                      payments
-                    </span>
+                    <HugeiconsIcon
+                      icon={MoneySend01Icon}
+                      className="h-4 w-4 text-slate-400"
+                    />
                     <span className="text-slate-600 dark:text-slate-400">
                       Contributed $500
                     </span>
@@ -347,9 +365,10 @@ function CommunicationsPage() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm sm:gap-3">
-                    <span className="material-symbols-outlined text-sm text-slate-400">
-                      account_balance
-                    </span>
+                    <HugeiconsIcon
+                      icon={BankIcon}
+                      className="h-4 w-4 text-slate-400"
+                    />
                     <span className="text-slate-600 dark:text-slate-400">
                       Loan payment
                     </span>
@@ -372,9 +391,10 @@ function CommunicationsPage() {
             </div>
           ) : (
             <div className="py-10 text-center">
-              <span className="material-symbols-outlined mb-3 text-4xl text-slate-300 dark:text-slate-600">
-                info
-              </span>
+              <HugeiconsIcon
+                icon={InformationCircleIcon}
+                className="mx-auto mb-3 h-12 w-12 text-slate-300 dark:text-slate-600"
+              />
               <p className="text-slate-500 dark:text-slate-400">
                 Select a member conversation to see their details
               </p>
