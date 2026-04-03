@@ -3,15 +3,32 @@ import { useAuth } from "../providers/auth-provider"
 import { useTheme } from "../providers/theme-provider"
 import { cn } from "../lib/utils"
 import { useState } from "react"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  DashboardSquare01Icon,
+  UserGroupIcon,
+  MoneySend01Icon,
+  BankIcon,
+  Message02Icon,
+  Settings01Icon,
+  Menu01Icon,
+  Search01Icon,
+  Notification01Icon,
+  HelpCircleIcon,
+  Sun01Icon,
+  Moon02Icon,
+  AddCircleIcon,
+  Logout01Icon,
+} from "@hugeicons/core-free-icons"
 
 // Navigation items - Only 6 main routes
 const navItems = [
-  { label: "Dashboard", path: "/dashboard", icon: "grid_view" },
-  { label: "Members", path: "/members", icon: "group" },
-  { label: "Contributions", path: "/contributions", icon: "payments" },
-  { label: "Loans", path: "/loans", icon: "account_balance" },
-  { label: "Communications", path: "/communications", icon: "chat" },
-  { label: "Settings", path: "/settings", icon: "settings" },
+  { label: "Dashboard", path: "/dashboard", icon: DashboardSquare01Icon },
+  { label: "Members", path: "/members", icon: UserGroupIcon },
+  { label: "Contributions", path: "/contributions", icon: MoneySend01Icon },
+  { label: "Loans", path: "/loans", icon: BankIcon },
+  { label: "Communications", path: "/communications", icon: Message02Icon },
+  { label: "Settings", path: "/settings", icon: Settings01Icon },
 ]
 
 export const Route = createFileRoute("/_authenticated")({
@@ -55,9 +72,7 @@ function AuthenticatedLayout() {
         {/* Logo */}
         <div className="mb-8 flex items-center space-x-3 px-4">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e55be] to-[#003d9a] shadow-sm">
-            <span className="material-symbols-outlined text-xl text-white">
-              account_balance
-            </span>
+            <HugeiconsIcon icon={BankIcon} className="h-5 w-5 text-white" />
           </div>
           <div>
             <h1 className="text-lg leading-tight font-extrabold text-[#191c1e] dark:text-white">
@@ -86,16 +101,14 @@ function AuthenticatedLayout() {
         {/* Bottom Actions */}
         <div className="mt-6 border-t border-slate-200 pt-6 dark:border-slate-700">
           <button className="mb-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-[#1e55be] to-[#003d9a] py-3 font-bold text-white shadow-md transition-transform active:scale-95">
-            <span className="material-symbols-outlined text-sm">
-              add_circle
-            </span>
+            <HugeiconsIcon icon={AddCircleIcon} className="h-4 w-4" />
             New Report
           </button>
           <button
             onClick={logout}
             className="flex w-full items-center space-x-3 px-4 py-2 text-slate-600 transition-all hover:text-[#003d9a] dark:text-slate-400 dark:hover:text-[#b2c5ff]"
           >
-            <span className="material-symbols-outlined">logout</span>
+            <HugeiconsIcon icon={Logout01Icon} className="h-5 w-5" />
             <span>Sign Out</span>
           </button>
         </div>
@@ -109,13 +122,14 @@ function AuthenticatedLayout() {
             onClick={() => setMobileMenuOpen(true)}
             className="rounded-full p-2 text-slate-500 transition-all hover:bg-slate-100 active:scale-95 lg:hidden dark:text-slate-400 dark:hover:bg-slate-800"
           >
-            <span className="material-symbols-outlined">menu</span>
+            <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
           </button>
 
           <div className="relative max-w-xl flex-1">
-            <span className="material-symbols-outlined absolute top-1/2 left-3 -translate-y-1/2 text-slate-500 dark:text-slate-400">
-              search
-            </span>
+            <HugeiconsIcon
+              icon={Search01Icon}
+              className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
+            />
             <input
               type="text"
               placeholder="Search..."
@@ -131,18 +145,27 @@ function AuthenticatedLayout() {
               onClick={toggleTheme}
               className="rounded-full p-2 text-slate-500 transition-all hover:bg-slate-100 active:scale-95 dark:text-slate-400 dark:hover:bg-slate-800"
             >
-              <span className="material-symbols-outlined text-sm sm:text-base">
-                {resolvedTheme === "dark" ? "light_mode" : "dark_mode"}
-              </span>
+              {resolvedTheme === "dark" ? (
+                <HugeiconsIcon
+                  icon={Sun01Icon}
+                  className="h-4 w-4 sm:h-5 sm:w-5"
+                />
+              ) : (
+                <HugeiconsIcon
+                  icon={Moon02Icon}
+                  className="h-4 w-4 sm:h-5 sm:w-5"
+                />
+              )}
             </button>
             <button className="relative rounded-full p-2 text-slate-500 transition-all hover:bg-slate-100 active:scale-95 dark:text-slate-400 dark:hover:bg-slate-800">
-              <span className="material-symbols-outlined text-sm sm:text-base">
-                notifications
-              </span>
+              <HugeiconsIcon
+                icon={Notification01Icon}
+                className="h-4 w-4 sm:h-5 sm:w-5"
+              />
               <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full border border-white bg-[#9b3e00] sm:h-2 sm:w-2 dark:border-[#0b1326]"></span>
             </button>
             <button className="hidden rounded-full p-2 text-slate-500 transition-all hover:bg-slate-100 active:scale-95 sm:block dark:text-slate-400 dark:hover:bg-slate-800">
-              <span className="material-symbols-outlined">help_outline</span>
+              <HugeiconsIcon icon={HelpCircleIcon} className="h-5 w-5" />
             </button>
           </div>
 
@@ -180,7 +203,7 @@ function NavLink({
   onClick,
 }: {
   to: string
-  icon: string
+  icon: typeof DashboardSquare01Icon
   children: React.ReactNode
   onClick?: () => void
 }) {
@@ -200,7 +223,7 @@ function NavLink({
         "[&[data-status='active']]:translate-x-1"
       )}
     >
-      <span className="material-symbols-outlined">{icon}</span>
+      <HugeiconsIcon icon={icon} className="h-5 w-5" />
       <span>{children}</span>
     </Link>
   )
