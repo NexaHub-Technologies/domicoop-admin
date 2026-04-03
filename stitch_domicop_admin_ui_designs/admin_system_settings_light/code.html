@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cobalt Archive | Admin Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-secondary-container": "#1d1d1f",
+            "surface-dim": "#f7f9fb",
+            "secondary-fixed": "#d8e3fb",
+            "on-tertiary-fixed": "#351000",
+            "inverse-on-surface": "#f1f0f4",
+            "on-primary-fixed-variant": "#0040a0",
+            "surface-bright": "#ffffff",
+            "on-error": "#ffffff",
+            "surface-variant": "#dfe2eb",
+            "primary-container": "#d8e2ff",
+            "on-surface-variant": "#43474e",
+            "surface-container-highest": "#e2e2e6",
+            "outline-variant": "#c4c6cf",
+            "on-surface": "#191c1e",
+            "surface-container": "#f0f0f3",
+            "inverse-primary": "#adc6ff",
+            "surface": "#f7f9fb",
+            "primary": "#1e55be",
+            "on-tertiary-container": "#311300",
+            "on-error-container": "#410002",
+            "error": "#ba1a1a",
+            "surface-tint": "#1e55be",
+            "on-primary-container": "#001a41",
+            "tertiary": "#984061",
+            "surface-container-low": "#f7f9fb",
+            "secondary": "#565e71",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed-dim": "#bec6dc",
+            "primary-fixed": "#d8e2ff",
+            "on-secondary-fixed": "#131b2c",
+            "on-background": "#191c1e",
+            "inverse-surface": "#2e3033",
+            "on-secondary": "#ffffff",
+            "outline": "#74777f",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#adc6ff",
+            "surface-container-high": "#e8e8ec",
+            "tertiary-fixed": "#ffd9e2",
+            "tertiary-container": "#ffd9e2",
+            "on-secondary-fixed-variant": "#3f4759",
+            "tertiary-fixed-dim": "#ffb1c8",
+            "secondary-container": "#dae2f9",
+            "on-tertiary-fixed-variant": "#7d2949",
+            "on-primary-fixed": "#001a41",
+            "background": "#f7f9fb",
+            "on-primary": "#ffffff"
+          },
+          fontFamily: {
+            "headline": ["Plus Jakarta Sans"],
+            "body": ["Plus Jakarta Sans"],
+            "label": ["Plus Jakarta Sans"]
+          },
+          borderRadius: {"DEFAULT": "0.5rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .cobalt-gradient {
+      background: linear-gradient(135deg, #1e55be 0%, #003d9a 100%);
+    }
+    .archive-glass {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    body {
+      background-color: #f7f9fb;
+      color: #191c1e;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f0f0f3; }
+    ::-webkit-scrollbar-thumb { background: #c4c6cf; border-radius: 10px; }
+    .soft-ui-card {
+      background-color: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0px 12px 32px rgba(25, 28, 30, 0.06);
+    }
+  </style>
+</head>
+<body class="overflow-x-hidden">
+<!-- SideNavBar: Integrated from {{DATA:COMPONENTS:COMPONENTS_135}} -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 bg-[#eceef0] flex flex-col p-4 gap-2 font-['Plus_Jakarta_Sans'] text-[0.875rem] font-medium transition-all">
+<div class="flex items-center px-4 mb-8 space-x-3">
+<div class="w-10 h-10 cobalt-gradient rounded-lg flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h1 class="text-lg font-extrabold text-[#191c1e] leading-tight">Cobalt Archive</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 opacity-60">v2.4.0-Architect</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-600 hover:text-[#003d9a] hover:bg-white/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-600 hover:text-[#003d9a] hover:bg-white/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span>Analytics</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-600 hover:text-[#003d9a] hover:bg-white/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Inventory</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-600 hover:text-[#003d9a] hover:bg-white/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>User Management</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-600 hover:text-[#003d9a] hover:bg-white/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span>System Logs</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-white text-[#003d9a] font-bold shadow-sm border-l-4 border-[#003d9a] translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="pt-6 mt-6 border-t border-slate-300/30">
+<button class="w-full cobalt-gradient text-white font-bold py-3 rounded-lg mb-6 shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+        New Report
+      </button>
+<a class="flex items-center space-x-3 px-4 py-2 text-slate-600 hover:text-[#003d9a] transition-all" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span>Support</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-2 text-slate-600 hover:text-[#003d9a] transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar: Integrated from {{DATA:COMPONENTS:COMPONENTS_135}} -->
+<header class="fixed top-0 right-0 w-[calc(100%-256px)] z-40 bg-white/80 backdrop-blur-md h-16 flex justify-between items-center px-8 ml-64 shadow-[0px_12px_32px_rgba(25,28,30,0.06)] font-['Plus_Jakarta_Sans'] text-sm tracking-tight">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full bg-[#f7f9fb] border-none rounded-full pl-10 pr-4 py-2 text-[#191c1e] focus:ring-1 focus:ring-[#1e55be]/40 placeholder:text-slate-400/70 transition-all" placeholder="Search system settings..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-6">
+<div class="flex space-x-2">
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+</div>
+<button class="text-[#003d9a] font-bold hover:underline">Support</button>
+<div class="flex items-center space-x-3">
+<img alt="Administrator Profile" class="w-8 h-8 rounded-full border border-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBq4QPDAzwsgMiQsV0s1vSGgrF0C1Bn_DMct1gN5IKNeAL5kc0qZrzPAlPPY9Kf30-_8Ez45ljuzDehk93LA_y1lhK-lHs9R4e-ExPRyGJnzbJZmdiW4aa4QXUzBXb_HmmInWDtq9rmIRzvkssGlHzQ4taZQRJ1g5KHpEZbOm72_r0EFQRv3ueMh2MieO5nIJ-_dbA83DKYpRWYq1dIubXADJUO6EILHavz-gNadns-B-9RjQbgHg-N9w4Yiib9Ag6MqTtLjiVV79xf"/>
+<span class="text-[#191c1e] font-bold">Co-op Admin</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 h-screen overflow-y-auto bg-[#f7f9fb]">
+<div class="p-8 max-w-7xl mx-auto space-y-12">
+<!-- Page Header -->
+<section>
+<span class="text-xs font-bold uppercase tracking-[0.2em] text-[#1e55be]/70 mb-2 block">System Configuration</span>
+<h2 class="text-4xl font-extrabold text-[#191c1e] tracking-tight">Admin Settings</h2>
+</section>
+<!-- Section: General System Configuration -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<div class="lg:sticky lg:top-24">
+<h3 class="text-xl font-bold text-[#191c1e] mb-2">General Configuration</h3>
+<p class="text-slate-500 text-sm leading-relaxed">Identity and fundamental operational settings for the DOMICOP database.</p>
+</div>
+<div class="lg:col-span-2">
+<div class="soft-ui-card rounded-xl p-8 space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Cooperative Name</label>
+<input class="w-full bg-[#f7f9fb] border-slate-200 border rounded-lg p-3 text-[#191c1e] focus:ring-1 focus:ring-[#1e55be]/40 focus:border-[#1e55be]/40 transition-all text-sm font-medium" type="text" value="DOMICOP Archive"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Operational Timezone</label>
+<select class="w-full bg-[#f7f9fb] border-slate-200 border rounded-lg p-3 text-[#191c1e] focus:ring-1 focus:ring-[#1e55be]/40 focus:border-[#1e55be]/40 transition-all text-sm font-medium appearance-none">
+<option>UTC +01:00 (West Africa Time)</option>
+<option>UTC +00:00 (GMT)</option>
+<option>UTC -05:00 (Eastern Time)</option>
+</select>
+</div>
+</div>
+<div class="space-y-4">
+<label class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Cooperative Logo</label>
+<div class="flex items-center gap-6 p-5 bg-[#f7f9fb] rounded-xl border border-slate-200">
+<div class="w-16 h-16 rounded-lg cobalt-gradient flex items-center justify-center overflow-hidden shadow-sm">
+<span class="material-symbols-outlined text-white text-3xl">account_balance</span>
+</div>
+<div>
+<button class="px-4 py-2 bg-white text-[#191c1e] text-xs font-bold rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">Replace Logo</button>
+<p class="text-[10px] text-slate-400 mt-2">PNG, JPG or SVG. Max 2MB.</p>
+</div>
+</div>
+</div>
+<div class="flex justify-end gap-3 pt-6 border-t border-slate-100">
+<button class="px-5 py-2 text-xs font-bold text-slate-500 hover:text-[#191c1e] transition-colors">Discard</button>
+<button class="px-5 py-2 text-xs font-black cobalt-gradient text-white rounded-lg shadow-md shadow-primary/20 hover:brightness-110 active:scale-95 transition-all">Save Changes</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Member Management Rules -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<div class="lg:sticky lg:top-24">
+<h3 class="text-xl font-bold text-[#191c1e] mb-2">Member Rules</h3>
+<p class="text-slate-500 text-sm leading-relaxed">Define how new members are onboarded and maintained within the ecosystem.</p>
+</div>
+<div class="lg:col-span-2">
+<div class="soft-ui-card rounded-xl p-8 space-y-8">
+<div class="flex items-center justify-between p-5 bg-[#f7f9fb] rounded-xl border border-slate-200">
+<div>
+<p class="text-sm font-bold text-[#191c1e]">Automatic Member Approval</p>
+<p class="text-xs text-slate-500">Enable instant membership upon registration fee payment.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1e55be]"></div>
+</label>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Registration Fee (DOM)</label>
+<input class="w-full bg-[#f7f9fb] border-slate-200 border rounded-lg p-3 text-[#191c1e] focus:ring-1 focus:ring-[#1e55be]/40 focus:border-[#1e55be]/40 transition-all text-sm font-medium" type="number" value="2500"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Suspension Grace Period (Days)</label>
+<input class="w-full bg-[#f7f9fb] border-slate-200 border rounded-lg p-3 text-[#191c1e] focus:ring-1 focus:ring-[#1e55be]/40 focus:border-[#1e55be]/40 transition-all text-sm font-medium" type="number" value="30"/>
+</div>
+</div>
+<div class="p-5 bg-[#f7f9fb] rounded-xl border border-slate-200">
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be] mb-4">Default Account Protocols</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-white text-[#191c1e] text-[10px] font-black rounded-full border border-slate-200">KYC_VERIFIED</span>
+<span class="px-3 py-1 bg-white text-[#191c1e] text-[10px] font-black rounded-full border border-slate-200">WALLET_ACTIVE</span>
+<span class="px-3 py-1 bg-white text-[#191c1e] text-[10px] font-black rounded-full border border-slate-200">VOTING_ELIGIBLE</span>
+</div>
+</div>
+<div class="flex justify-end gap-3 pt-6 border-t border-slate-100">
+<button class="px-5 py-2 text-xs font-bold text-slate-500 hover:text-[#191c1e] transition-colors">Discard</button>
+<button class="px-5 py-2 text-xs font-black cobalt-gradient text-white rounded-lg shadow-md shadow-primary/20 transition-all">Apply Rules</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Financial Protocols -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<div class="lg:sticky lg:top-24">
+<h3 class="text-xl font-bold text-[#191c1e] mb-2">Financial Protocols</h3>
+<p class="text-slate-500 text-sm leading-relaxed">Core economic parameters for loans, dividends, and minimum reserves.</p>
+</div>
+<div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="soft-ui-card p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-[#1e55be]/5 rounded-full blur-2xl group-hover:bg-[#1e55be]/10 transition-all"></div>
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be] mb-4">Base Interest Rate</p>
+<h4 class="text-4xl font-extrabold text-[#191c1e] mb-2">4.50%</h4>
+<p class="text-xs text-slate-500 mb-6">Annual percentage rate for standard loans.</p>
+<button class="text-xs font-bold text-[#1e55be] flex items-center gap-2 hover:opacity-80">
+              Update Rate <span class="material-symbols-outlined text-sm">trending_up</span>
+</button>
+</div>
+<div class="soft-ui-card p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-rose-500/5 rounded-full blur-2xl group-hover:bg-rose-500/10 transition-all"></div>
+<p class="text-[10px] font-black uppercase tracking-widest text-rose-600 mb-4">Dividend Distribution</p>
+<h4 class="text-2xl font-bold text-[#191c1e] mb-2">Quarterly</h4>
+<p class="text-xs text-slate-500 mb-6">Last distributed: Oct 12, 2023.</p>
+<button class="text-xs font-bold text-[#191c1e] flex items-center gap-2 hover:opacity-80">
+              Modify Schedule <span class="material-symbols-outlined text-sm">calendar_month</span>
+</button>
+</div>
+<div class="soft-ui-card p-8 rounded-xl md:col-span-2">
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be] mb-6">Minimum Contribution Thresholds</p>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="p-4 bg-[#f7f9fb] rounded-lg border border-slate-200">
+<p class="text-[10px] text-slate-400 uppercase font-black mb-1">Entry Tier</p>
+<p class="text-xl font-bold text-[#191c1e]">5,000</p>
+</div>
+<div class="p-4 bg-[#f7f9fb] rounded-lg border border-slate-200">
+<p class="text-[10px] text-slate-400 uppercase font-black mb-1">Standard Tier</p>
+<p class="text-xl font-bold text-[#191c1e]">15,000</p>
+</div>
+<div class="p-4 bg-white rounded-lg border-2 border-[#1e55be]/30 shadow-sm shadow-[#1e55be]/10">
+<p class="text-[10px] text-[#1e55be] uppercase font-black mb-1">Premium Tier</p>
+<p class="text-xl font-bold text-[#1e55be]">50,000</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Security & Access Control -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<div class="lg:sticky lg:top-24">
+<h3 class="text-xl font-bold text-[#191c1e] mb-2">Security &amp; Access</h3>
+<p class="text-slate-500 text-sm leading-relaxed">Protect the archive with multi-layer authorization and role-based permissions.</p>
+</div>
+<div class="lg:col-span-2">
+<div class="soft-ui-card rounded-xl overflow-hidden">
+<div class="p-8 pb-0">
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be] mb-6">Administrative Roles</p>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-4 bg-[#f7f9fb] rounded-xl hover:bg-slate-50 transition-all cursor-pointer group border border-slate-200">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-[#1e55be]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#1e55be]">verified_user</span>
+</div>
+<div>
+<p class="text-sm font-bold text-[#191c1e]">Super Administrator</p>
+<p class="text-[10px] text-slate-500">Full access to all settings and financial data.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-[#1e55be] transition-colors">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-[#f7f9fb] rounded-xl hover:bg-slate-50 transition-all cursor-pointer group border border-slate-200">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-rose-600">analytics</span>
+</div>
+<div>
+<p class="text-sm font-bold text-[#191c1e]">Financial Auditor</p>
+<p class="text-[10px] text-slate-500">Read-only access to records, export permissions.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-[#1e55be] transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+<div class="p-8 space-y-6">
+<div class="flex items-center justify-between p-5 bg-[#f7f9fb] rounded-xl border border-slate-200">
+<div>
+<p class="text-sm font-bold text-[#191c1e]">Enforce 2FA for Admins</p>
+<p class="text-xs text-slate-500">Mandatory Google Authenticator or SMS verification.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1e55be]"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-5 bg-[#f7f9fb] rounded-xl border border-slate-200">
+<div>
+<p class="text-sm font-bold text-[#191c1e]">Session Timeout</p>
+<p class="text-xs text-slate-500">Auto-logout after inactivity.</p>
+</div>
+<select class="bg-white border-slate-200 border rounded-lg p-2 text-xs font-black text-[#191c1e] focus:ring-1 focus:ring-[#1e55be]/40 appearance-none px-4">
+<option>15 Minutes</option>
+<option selected="">30 Minutes</option>
+<option>1 Hour</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Integration & API -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<div class="lg:sticky lg:top-24">
+<h3 class="text-xl font-bold text-[#191c1e] mb-2">Integrations</h3>
+<p class="text-slate-500 text-sm leading-relaxed">Connect Cobalt Archive with external banking rails and reporting tools.</p>
+</div>
+<div class="lg:col-span-2">
+<div class="soft-ui-card rounded-xl p-8 space-y-8">
+<div>
+<div class="flex items-center justify-between mb-6">
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Active Webhooks</p>
+<button class="text-[10px] font-black text-[#1e55be] px-3 py-1 bg-[#1e55be]/10 rounded-full hover:bg-[#1e55be]/20 transition-all">+ Add Gateway</button>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-4 bg-[#f7f9fb] rounded-xl border border-slate-200 group hover:border-[#1e55be]/20 transition-all">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-[#1e55be] transition-colors">api</span>
+<div>
+<p class="text-sm font-bold text-[#191c1e]">Stripe_Global_Payments</p>
+<p class="text-[10px] text-slate-400 font-mono">https://api.domicop.co/v1/webhook</p>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-black rounded uppercase border border-emerald-100">Active</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-[#f7f9fb] rounded-xl border border-slate-200 group hover:border-[#1e55be]/20 transition-all">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-[#1e55be] transition-colors">api</span>
+<div>
+<p class="text-sm font-bold text-[#191c1e]">Flutterwave_X_Sync</p>
+<p class="text-[10px] text-slate-400 font-mono">https://pay.flutter.com/hook/8821</p>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-amber-50 text-amber-600 text-[10px] font-black rounded uppercase border border-amber-100">Pending</span>
+</div>
+</div>
+</div>
+<div>
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be] mb-6">Scheduled Data Exports</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<button class="p-6 bg-[#f7f9fb] rounded-xl border border-slate-200 hover:border-[#1e55be]/30 transition-all text-left group">
+<span class="material-symbols-outlined text-[#1e55be] mb-3 text-3xl">description</span>
+<p class="text-sm font-bold text-[#191c1e] group-hover:text-[#1e55be] transition-colors">Monthly PDF Report</p>
+<p class="text-[10px] text-slate-400">Scheduled: 1st of month</p>
+</button>
+<button class="p-6 bg-[#f7f9fb] rounded-xl border border-slate-200 hover:border-rose-300 transition-all text-left group">
+<span class="material-symbols-outlined text-rose-600 mb-3 text-3xl">table_chart</span>
+<p class="text-sm font-bold text-[#191c1e] group-hover:text-rose-600 transition-colors">Daily CSV Ledger</p>
+<p class="text-[10px] text-slate-400">Scheduled: 00:00 UTC</p>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Spacing -->
+<div class="h-20"></div>
+</div>
+</main>
+</body></html>

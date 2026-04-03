@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Co-op Admin | Loan &amp; Dividend Processing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-container": "#aeb9d0",
+                        "surface-dim": "#0b1326",
+                        "secondary-fixed": "#d8e3fb",
+                        "on-tertiary-fixed": "#351000",
+                        "inverse-on-surface": "#283044",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "surface-bright": "#31394d",
+                        "on-error": "#690005",
+                        "surface-variant": "#2d3449",
+                        "primary-container": "#1e55be",
+                        "on-surface-variant": "#c3c6d5",
+                        "surface-container-highest": "#2d3449",
+                        "outline-variant": "#434653",
+                        "on-surface": "#dae2fd",
+                        "surface-container": "#171f33",
+                        "inverse-primary": "#2358c1",
+                        "surface": "#0b1326",
+                        "primary": "#b2c5ff",
+                        "on-tertiary-container": "#ffc7ae",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#b2c5ff",
+                        "on-primary-container": "#c5d3ff",
+                        "tertiary": "#ffb694",
+                        "surface-container-low": "#131b2e",
+                        "secondary": "#bcc7de",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "primary-fixed": "#dae2ff",
+                        "on-secondary-fixed": "#111c2d",
+                        "on-background": "#dae2fd",
+                        "inverse-surface": "#dae2fd",
+                        "on-secondary": "#263143",
+                        "outline": "#8d909e",
+                        "on-tertiary": "#561f00",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "surface-container-high": "#222a3d",
+                        "tertiary-fixed": "#ffdbcc",
+                        "tertiary-container": "#9b3e00",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "tertiary-fixed-dim": "#ffb694",
+                        "on-tertiary-fixed-variant": "#7a2f00",
+                        "on-primary-fixed": "#001847",
+                        "background": "#0b1326",
+                        "on-primary": "#002c72"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0b1326;
+            color: #dae2fd;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .cobalt-gradient {
+            background: linear-gradient(135deg, #4481eb 0%, #040efb 100%);
+        }
+        .cobalt-card-gradient {
+            background: linear-gradient(180deg, rgba(23, 31, 51, 1) 0%, rgba(11, 19, 38, 1) 100%);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .glass-panel {
+            background: rgba(23, 31, 51, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(178, 197, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="font-body selection:bg-primary-container/30">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 bg-surface-container-lowest border-r border-outline-variant/10 flex flex-col py-8 px-4 space-y-2">
+<div class="px-4 mb-10 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl cobalt-gradient flex items-center justify-center shadow-[0_0_20px_rgba(4,14,251,0.4)]">
+<span class="material-symbols-outlined text-white" data-icon="account_balance" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h2 class="text-lg font-black text-on-surface tracking-tight leading-none">Nocturnal Cobalt</h2>
+<p class="text-[10px] uppercase tracking-[0.2em] text-primary/60 font-bold mt-1">Cooperative Archive</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/80 font-medium text-sm tracking-wide hover:bg-surface-container hover:text-on-surface transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 duration-200" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/80 font-medium text-sm tracking-wide hover:bg-surface-container hover:text-on-surface transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 duration-200" data-icon="group">group</span>
+<span>Members</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-semibold bg-primary/10 border-r-2 border-primary font-medium text-sm tracking-wide rounded-l-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="payments" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span>Contributions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/80 font-medium text-sm tracking-wide hover:bg-surface-container hover:text-on-surface transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 duration-200" data-icon="account_balance">account_balance</span>
+<span>Loans</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/80 font-medium text-sm tracking-wide hover:bg-surface-container hover:text-on-surface transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 duration-200" data-icon="chat">chat</span>
+<span>Communications</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/80 font-medium text-sm tracking-wide hover:bg-surface-container hover:text-on-surface transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 duration-200" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-1">
+<button class="w-full cobalt-gradient text-white font-bold py-3 rounded-xl mb-4 shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="analytics">analytics</span>
+                Generate Report
+            </button>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant/80 font-medium text-sm tracking-wide hover:bg-surface-container transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-error font-medium text-sm tracking-wide hover:bg-error-container/20 transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-40 bg-surface-container-lowest/80 backdrop-blur-xl h-16 flex justify-between items-center px-6 ml-64 max-w-[calc(100%-16rem)] border-b border-outline-variant/10">
+<div class="flex items-center gap-6">
+<h1 class="text-xl font-bold tracking-tight text-on-surface">Loan &amp; Dividend Processing</h1>
+<div class="hidden md:flex bg-surface-container-low rounded-full px-4 py-1.5 items-center gap-2 border border-outline-variant/20 shadow-inner">
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm text-on-surface w-64 placeholder:text-on-surface-variant/50" placeholder="Search members or IDs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined text-lg" data-icon="help">help</span>
+                Support
+            </button>
+<div class="flex items-center gap-2 border-l border-outline-variant/20 pl-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-surface-container-lowest"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="apps">apps</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary/30 cursor-pointer hover:border-primary transition-all">
+<img alt="Admin Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional male administrator in his 40s wearing a crisp dark suit and glasses with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtAH49fYpDY1_hwXAA8EmXSvdM6ZCSrA2HfUgVJSEvkFGju7Sd1QFiO2jT8CrKsFYJfx982Iq_ruojJW7V4V0tK6-7QtRBGOMi5lrJqCwP4SjfLIGoQdVtrCngHziCURRaPTPmpoQa0RNW_nps5WoD9YmisdEtg383STx8BW3nLtJj2WROg6hUxFC3Xf0yVMaIQZXjGLKj7V35hj8JgBV3AlJN8ACJZsFInvoVRMMm_W8cw5h-ODsB1V4Yl_5_Ys8h6EBxBdGOKkt-"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-16 min-h-screen p-8 bg-surface-dim">
+<div class="max-w-7xl mx-auto space-y-12">
+<!-- Section 1: Loan Approval Queue -->
+<section aria-label="Loan Approval Queue">
+<div class="flex justify-between items-end mb-8">
+<div>
+<span class="text-[11px] uppercase tracking-[0.3em] text-primary font-bold">Priority Actions</span>
+<h2 class="text-4xl font-headline font-extrabold text-on-surface tracking-tighter mt-1">Loan Queue</h2>
+</div>
+<div class="flex gap-2">
+<button class="p-2.5 rounded-xl bg-surface-container border border-outline-variant/10 hover:bg-surface-bright transition-colors text-on-surface-variant shadow-lg">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2.5 rounded-xl bg-surface-container border border-outline-variant/10 hover:bg-surface-bright transition-colors text-on-surface-variant shadow-lg">
+<span class="material-symbols-outlined" data-icon="sort">sort</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Large Feature Card -->
+<div class="lg:col-span-2 bg-surface-container border border-outline-variant/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[120px] text-primary" data-icon="pending_actions">pending_actions</span>
+</div>
+<div class="relative z-10">
+<div class="flex flex-col md:flex-row justify-between items-start mb-10 gap-6">
+<div class="flex items-center gap-5">
+<div class="w-16 h-16 rounded-2xl bg-surface-container-highest flex items-center justify-center border border-primary/20 p-0.5">
+<img alt="Member Avatar" class="w-full h-full rounded-[14px] object-cover" data-alt="portrait of a professional woman in business casual attire with a friendly smile, office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiLAJO-Y7MTf2LIkG-Se0brwKJDzVqNO7_AdVWKTPwhI0jH803LcC3_iPmPeF_47PQc6_CT3AkgMGHlbUu0Cj4ZKWxfBmae1ohm0arAY0gbmDIeLAUWO5sDNIU34iW_SmFKwkJGXZBf5R9Km6iW_3CaL7CJhgM4WN5knKHZlLP9BTeee0gg324Gibjgl5S44EBbewdzXiN3I7AzntkLJm8pVnzaZMWXf-HknbObseQWn7IcXWsGDminZpsrMN-BcUs8OC56usDz0pN"/>
+</div>
+<div>
+<h3 class="text-2xl font-bold text-on-surface">Alicia Montgomery</h3>
+<p class="text-sm text-on-surface-variant font-medium">Member ID: <span class="text-primary">#COP-49210</span> • Since 2018</p>
+</div>
+</div>
+<div class="text-left md:text-right">
+<p class="text-4xl font-black text-on-surface tracking-tight">$12,500.00</p>
+<p class="text-sm text-primary font-bold tracking-widest uppercase mt-1">Business Expansion Loan</p>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+<div class="bg-surface-container-lowest border border-outline-variant/10 p-5 rounded-2xl">
+<p class="text-[10px] uppercase text-on-surface-variant font-bold tracking-widest mb-1.5">Credit Score</p>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary shadow-[0_0_8px_rgba(255,182,148,0.5)]"></span>
+<span class="text-xl font-bold text-tertiary">782</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/10 p-5 rounded-2xl">
+<p class="text-[10px] uppercase text-on-surface-variant font-bold tracking-widest mb-1.5">Repayment Term</p>
+<p class="text-xl font-bold text-on-surface">36 Months</p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/10 p-5 rounded-2xl">
+<p class="text-[10px] uppercase text-on-surface-variant font-bold tracking-widest mb-1.5">Interest Rate</p>
+<p class="text-xl font-bold text-on-surface">4.5% Fixed</p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/10 p-5 rounded-2xl">
+<p class="text-[10px] uppercase text-on-surface-variant font-bold tracking-widest mb-1.5">Risk Profile</p>
+<span class="inline-flex px-3 py-1 rounded-full bg-tertiary/10 text-tertiary text-[10px] font-black border border-tertiary/20 tracking-wider">LOW RISK</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-4">
+<button class="cobalt-gradient text-white font-black px-8 py-3.5 rounded-2xl hover:shadow-[0_0_30px_rgba(4,14,251,0.5)] hover:-translate-y-0.5 transition-all flex items-center gap-3">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                    Approve Loan
+                                </button>
+<button class="bg-surface-container-highest text-on-surface font-bold px-8 py-3.5 rounded-2xl border border-outline-variant/20 hover:bg-surface-bright transition-colors flex items-center gap-3">
+<span class="material-symbols-outlined text-sm" data-icon="info">info</span>
+                                    Request Info
+                                </button>
+<button class="bg-error/10 text-error font-bold px-8 py-3.5 rounded-2xl border border-error/20 hover:bg-error/20 transition-all flex items-center gap-3">
+<span class="material-symbols-outlined text-sm" data-icon="cancel">cancel</span>
+                                    Decline
+                                </button>
+</div>
+</div>
+</div>
+<!-- Small Side Card -->
+<div class="bg-surface-container-low rounded-3xl p-8 border border-outline-variant/10 hover:border-primary/30 transition-all flex flex-col shadow-xl">
+<div class="flex justify-between items-center mb-8">
+<span class="px-4 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black tracking-widest border border-primary/20 uppercase">Pending Review</span>
+<span class="text-on-surface-variant text-xs font-medium">2h ago</span>
+</div>
+<h3 class="font-bold text-xl text-on-surface">Robert J. Sterling</h3>
+<p class="text-3xl font-black text-on-surface mt-2">$4,200</p>
+<p class="text-sm text-on-surface-variant font-medium mb-8">Emergency Personal Loan</p>
+<div class="space-y-4 mb-auto">
+<div class="flex justify-between text-xs font-bold uppercase tracking-widest">
+<span class="text-on-surface-variant">Credit Score</span>
+<span class="text-error">640</span>
+</div>
+<div class="w-full bg-surface-container-lowest rounded-full h-2 overflow-hidden shadow-inner border border-outline-variant/10">
+<div class="bg-gradient-to-r from-error to-orange-400 h-full rounded-full" style="width: 64%"></div>
+</div>
+</div>
+<button class="w-full mt-8 bg-surface-container-highest text-on-surface py-4 rounded-2xl text-sm font-black hover:bg-surface-bright border border-outline-variant/10 transition-all uppercase tracking-widest">
+                            View Application
+                        </button>
+</div>
+</div>
+</section>
+<!-- Section 2: Dividend Distribution -->
+<section aria-label="Dividend Distribution Tool">
+<div class="flex flex-col lg:flex-row gap-8 items-start">
+<!-- Left Column: Tool Control -->
+<div class="w-full lg:w-1/3 space-y-6">
+<div class="bg-surface-container rounded-[32px] p-8 border border-outline-variant/10 shadow-2xl cobalt-card-gradient">
+<div class="mb-8">
+<span class="text-[11px] uppercase tracking-[0.3em] text-primary font-bold">Asset Management</span>
+<h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tighter mt-1">Dividend Engine</h2>
+</div>
+<div class="space-y-6">
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-3 uppercase tracking-widest">Surplus for Distribution</label>
+<div class="relative">
+<span class="absolute left-5 top-1/2 -translate-y-1/2 text-primary font-black text-xl">$</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/10 rounded-2xl pl-10 py-4 text-2xl font-black text-on-surface focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all shadow-inner" type="text" value="145,000.00"/>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant mb-3 uppercase tracking-widest">Calculation Mode</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border border-outline-variant/10 rounded-2xl py-4 px-5 text-sm font-bold text-on-surface appearance-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 shadow-inner">
+<option>Proportional to Contributions</option>
+<option>Equal Distribution</option>
+<option>Tenure Based Bonus</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="pt-6 space-y-4">
+<button class="w-full bg-surface-container-highest text-on-surface font-black py-4 rounded-2xl hover:bg-surface-bright transition-all flex items-center justify-center gap-3 border border-outline-variant/20 uppercase tracking-widest text-xs">
+<span class="material-symbols-outlined text-lg" data-icon="preview">preview</span>
+                                        Preview Distribution
+                                    </button>
+<button class="w-full cobalt-gradient text-white font-black py-5 rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 duration-200 flex items-center justify-center gap-3 uppercase tracking-widest text-sm">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+                                        Confirm &amp; Distribute
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Preview Grid -->
+<div class="w-full lg:w-2/3">
+<div class="bg-surface-container-low rounded-[32px] overflow-hidden border border-outline-variant/10 shadow-xl">
+<div class="px-8 py-6 bg-surface-container/30 border-b border-outline-variant/10 flex justify-between items-center">
+<h3 class="font-bold text-lg text-on-surface">Calculated Payables <span class="text-primary/60 font-medium ml-2">(1,284 Members)</span></h3>
+<span class="text-xs text-on-surface-variant font-medium flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                                    Today, 09:42 AM
+                                </span>
+</div>
+<div class="overflow-x-auto no-scrollbar">
+<table class="w-full text-left">
+<thead class="bg-surface-container-lowest/50 text-on-surface-variant text-[10px] uppercase tracking-[0.2em] font-black">
+<tr>
+<th class="px-8 py-5">Member</th>
+<th class="px-8 py-5">Current Equity</th>
+<th class="px-8 py-5">Yield %</th>
+<th class="px-8 py-5 text-right">Dividend Amt</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-xs font-black text-primary border border-primary/20">JD</div>
+<div>
+<p class="text-sm font-bold text-on-surface">James D'Angelo</p>
+<p class="text-[11px] text-on-surface-variant font-medium">ID: <span class="text-primary/60">10922</span></p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-sm font-medium text-on-surface">$45,210.00</td>
+<td class="px-8 py-6 text-sm text-tertiary font-black">8.42%</td>
+<td class="px-8 py-6 text-base font-black text-primary text-right tracking-tight">$3,806.68</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-xs font-black text-primary border border-primary/20">SK</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Sarah Kincaid</p>
+<p class="text-[11px] text-on-surface-variant font-medium">ID: <span class="text-primary/60">10455</span></p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-sm font-medium text-on-surface">$12,800.00</td>
+<td class="px-8 py-6 text-sm text-tertiary font-black">8.42%</td>
+<td class="px-8 py-6 text-base font-black text-primary text-right tracking-tight">$1,077.76</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-xs font-black text-primary border border-primary/20">ML</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Marcus Lowery</p>
+<p class="text-[11px] text-on-surface-variant font-medium">ID: <span class="text-primary/60">11029</span></p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-sm font-medium text-on-surface">$89,400.00</td>
+<td class="px-8 py-6 text-sm text-tertiary font-black">8.42%</td>
+<td class="px-8 py-6 text-base font-black text-primary text-right tracking-tight">$7,527.48</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-xs font-black text-primary border border-primary/20">EY</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Elena Young</p>
+<p class="text-[11px] text-on-surface-variant font-medium">ID: <span class="text-primary/60">10833</span></p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6 text-sm font-medium text-on-surface">$5,100.00</td>
+<td class="px-8 py-6 text-sm text-tertiary font-black">8.42%</td>
+<td class="px-8 py-6 text-base font-black text-primary text-right tracking-tight">$429.42</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-5 bg-surface-container-lowest text-center">
+<button class="text-xs font-black text-primary hover:text-white hover:bg-primary/20 px-6 py-2 rounded-full transition-all uppercase tracking-[0.2em]">View All 1,284 Calculated Rows</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Transaction History Ledger -->
+<section aria-label="Transaction History Ledger">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-2xl font-bold text-on-surface tracking-tight">Admin Activity Ledger</h2>
+<button class="text-sm font-bold text-primary flex items-center gap-2 hover:bg-primary/10 px-4 py-2 rounded-xl transition-all border border-primary/20">
+<span class="material-symbols-outlined text-base" data-icon="download">download</span>
+                        Export Full CSV
+                    </button>
+</div>
+<div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 overflow-hidden shadow-2xl">
+<div class="grid grid-cols-12 bg-surface-container/50 py-5 px-8 text-[10px] uppercase font-black text-on-surface-variant tracking-[0.2em] border-b border-outline-variant/10">
+<div class="col-span-2">Date &amp; Time</div>
+<div class="col-span-4">Action Taken</div>
+<div class="col-span-3">Target Entity</div>
+<div class="col-span-2 text-right">Amount</div>
+<div class="col-span-1 text-right">Status</div>
+</div>
+<div class="divide-y divide-outline-variant/5">
+<!-- Ledger Item 1 -->
+<div class="grid grid-cols-12 py-5 px-8 items-center text-sm hover:bg-primary/5 transition-colors">
+<div class="col-span-2 text-on-surface-variant font-medium">Oct 24, 14:20</div>
+<div class="col-span-4 flex items-center gap-4">
+<span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-lg text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-bold text-on-surface">Loan Approval: Home Renovation</span>
+</div>
+<div class="col-span-3 text-on-surface-variant">Gregory Vance <span class="text-[11px] opacity-60 ml-1">(#V-192)</span></div>
+<div class="col-span-2 text-right font-black text-on-surface">$25,000.00</div>
+<div class="col-span-1 text-right">
+<span class="inline-block text-[9px] px-3 py-1 rounded-full bg-tertiary/10 text-tertiary font-black border border-tertiary/30 uppercase tracking-widest">Disbursed</span>
+</div>
+</div>
+<!-- Ledger Item 2 -->
+<div class="grid grid-cols-12 py-5 px-8 items-center text-sm hover:bg-primary/5 transition-colors">
+<div class="col-span-2 text-on-surface-variant font-medium">Oct 24, 11:05</div>
+<div class="col-span-4 flex items-center gap-4">
+<span class="material-symbols-outlined text-error bg-error/10 p-1.5 rounded-lg text-lg" data-icon="cancel" style="font-variation-settings: 'FILL' 1;">cancel</span>
+<span class="font-bold text-on-surface">Loan Denial: Insufficient Collateral</span>
+</div>
+<div class="col-span-3 text-on-surface-variant">Samantha Reed <span class="text-[11px] opacity-60 ml-1">(#R-402)</span></div>
+<div class="col-span-2 text-right font-bold text-on-surface-variant">$8,000.00</div>
+<div class="col-span-1 text-right">
+<span class="inline-block text-[9px] px-3 py-1 rounded-full bg-error-container/20 text-error font-black border border-error/30 uppercase tracking-widest">Closed</span>
+</div>
+</div>
+<!-- Ledger Item 3 -->
+<div class="grid grid-cols-12 py-5 px-8 items-center text-sm hover:bg-primary/5 transition-colors">
+<div class="col-span-2 text-on-surface-variant font-medium">Oct 23, 16:45</div>
+<div class="col-span-4 flex items-center gap-4">
+<span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-lg text-lg" data-icon="payments" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-bold text-on-surface">Quarterly Dividend Bulk Processing</span>
+</div>
+<div class="col-span-3 text-on-surface-variant">All Active Members <span class="text-[11px] opacity-60 ml-1">(1,280)</span></div>
+<div class="col-span-2 text-right font-black text-primary">$122,405.12</div>
+<div class="col-span-1 text-right">
+<span class="inline-block text-[9px] px-3 py-1 rounded-full bg-primary/10 text-primary font-black border border-primary/30 uppercase tracking-widest">Pending</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

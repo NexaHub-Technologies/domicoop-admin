@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Co-op Admin | Admin Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-secondary-container": "#aeb9d0",
+            "surface-dim": "#0b1326",
+            "secondary-fixed": "#d8e3fb",
+            "on-tertiary-fixed": "#351000",
+            "inverse-on-surface": "#283044",
+            "on-primary-fixed-variant": "#0040a0",
+            "surface-bright": "#31394d",
+            "on-error": "#690005",
+            "surface-variant": "#2d3449",
+            "primary-container": "#1e55be",
+            "on-surface-variant": "#c3c6d5",
+            "surface-container-highest": "#2d3449",
+            "outline-variant": "#434653",
+            "on-surface": "#dae2fd",
+            "surface-container": "#171f33",
+            "inverse-primary": "#2358c1",
+            "surface": "#0b1326",
+            "primary": "#b2c5ff",
+            "on-tertiary-container": "#ffc7ae",
+            "on-error-container": "#ffdad6",
+            "error": "#ffb4ab",
+            "surface-tint": "#b2c5ff",
+            "on-primary-container": "#c5d3ff",
+            "tertiary": "#ffb694",
+            "surface-container-low": "#131b2e",
+            "secondary": "#bcc7de",
+            "error-container": "#93000a",
+            "surface-container-lowest": "#060e20",
+            "secondary-fixed-dim": "#bcc7de",
+            "primary-fixed": "#dae2ff",
+            "on-secondary-fixed": "#111c2d",
+            "on-background": "#dae2fd",
+            "inverse-surface": "#dae2fd",
+            "on-secondary": "#263143",
+            "outline": "#8d909e",
+            "on-tertiary": "#561f00",
+            "primary-fixed-dim": "#b2c5ff",
+            "surface-container-high": "#222a3d",
+            "tertiary-fixed": "#ffdbcc",
+            "tertiary-container": "#9b3e00",
+            "on-secondary-fixed-variant": "#3c475a",
+            "tertiary-fixed-dim": "#ffb694",
+            "secondary-container": "#3e495d",
+            "on-tertiary-fixed-variant": "#7a2f00",
+            "on-primary-fixed": "#001847",
+            "background": "#0b1326",
+            "on-primary": "#002c72"
+          },
+          fontFamily: {
+            "headline": ["Plus Jakarta Sans"],
+            "body": ["Plus Jakarta Sans"],
+            "label": ["Plus Jakarta Sans"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .cobalt-gradient {
+      background: linear-gradient(135deg, #1e55be 0%, #112d6e 100%);
+    }
+    .archive-glass {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    body {
+      background-color: #0b1326;
+      color: #dae2fd;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #060e20; }
+    ::-webkit-scrollbar-thumb { background: #1e55be; border-radius: 10px; }
+    .soft-ui-card {
+      background-color: #131b2e;
+      border: 1px solid rgba(30, 85, 190, 0.1);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+    }
+    .input-field {
+      background-color: #060e20 !important;
+      border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+    .input-field:focus {
+      border-color: #1e55be !important;
+      box-shadow: 0 0 0 1px rgba(30, 85, 190, 0.4);
+    }
+  </style>
+</head>
+<body class="overflow-x-hidden text-on-surface">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 bg-[#0b1326] flex flex-col py-8 px-4 space-y-2 border-r border-white/5 shadow-2xl font-plus-jakarta text-sm tracking-wide">
+<div class="flex items-center px-4 mb-8 space-x-3">
+<div class="w-10 h-10 cobalt-gradient rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(30,85,190,0.3)]">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-[#dae2fd] leading-tight tracking-tight">Nocturnal Cobalt</h1>
+<p class="text-[10px] uppercase tracking-widest text-[#1e55be] font-bold">Cooperative Archive</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#c3c6d5] opacity-60 hover:opacity-100 hover:bg-[#171f33] hover:text-[#dae2fd] transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#c3c6d5] opacity-60 hover:opacity-100 hover:bg-[#171f33] hover:text-[#dae2fd] transition-all" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Members</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#c3c6d5] opacity-60 hover:opacity-100 hover:bg-[#171f33] hover:text-[#dae2fd] transition-all" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span>Contributions</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#c3c6d5] opacity-60 hover:opacity-100 hover:bg-[#171f33] hover:text-[#dae2fd] transition-all" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span>Loans</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#c3c6d5] opacity-60 hover:opacity-100 hover:bg-[#171f33] hover:text-[#dae2fd] transition-all" href="#">
+<span class="material-symbols-outlined">chat</span>
+<span>Communications</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-[#1e55be] font-bold bg-[#171f33] shadow-inner" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="pt-6 mt-6 border-t border-white/5">
+<button class="w-full cobalt-gradient text-white font-bold py-3 rounded-xl mb-6 shadow-lg shadow-primary-container/20 active:scale-95 transition-transform">
+        Generate Report
+      </button>
+<a class="flex items-center space-x-3 px-4 py-2 text-[#c3c6d5] opacity-60 hover:opacity-100 hover:text-[#dae2fd] transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-2 text-[#c3c6d5] opacity-60 hover:opacity-100 hover:text-[#dae2fd] transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-40 bg-[#0b1326]/80 archive-glass h-16 flex justify-between items-center px-6 ml-64 shadow-xl border-b border-white/5 font-plus-jakarta text-sm font-medium">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#1e55be]">search</span>
+<input class="w-full bg-[#060e20] border-none rounded-full pl-10 pr-4 py-2 text-on-surface focus:ring-1 focus:ring-primary/40 placeholder:text-outline/30 transition-all text-xs" placeholder="Search system settings..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-6 pr-64">
+<div class="flex space-x-2">
+<button class="p-2 text-[#c3c6d5] hover:bg-[#1e55be]/10 hover:text-[#1e55be] rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-[#c3c6d5] hover:bg-[#1e55be]/10 hover:text-[#1e55be] rounded-full transition-all">
+<span class="material-symbols-outlined">apps</span>
+</button>
+</div>
+<button class="text-[#1e55be] font-bold hover:brightness-125 transition-all">Support</button>
+<div class="flex items-center space-x-3 bg-[#131b2e] px-3 py-1.5 rounded-full border border-white/5">
+<img alt="Admin Profile" class="w-7 h-7 rounded-full border border-[#1e55be]/30" data-alt="professional portrait of a financial administrator in a clean modern office setting with soft blue lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBq4QPDAzwsgMiQsV0s1vSGgrF0C1Bn_DMct1gN5IKNeAL5kc0qZrzPAlPPY9Kf30-_8Ez45ljuzDehk93LA_y1lhK-lHs9R4e-ExPRyGJnzbJZmdiW4aa4QXUzBXb_HmmInWDtq9rmIRzvkssGlHzQ4taZQRJ1g5KHpEZbOm72_r0EFQRv3ueMh2MieO5nIJ-_dbA83DKYpRWYq1dIubXADJUO6EILHavz-gNadns-B-9RjQbgHg-N9w4Yiib9Ag6MqTtLjiVV79xf"/>
+<span class="text-[#dae2fd] font-bold text-xs">Co-op Admin</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 h-screen overflow-y-auto bg-surface">
+<div class="p-8 max-w-7xl mx-auto space-y-12">
+<!-- Page Header -->
+<section>
+<span class="text-[10px] font-black uppercase tracking-[0.3em] text-[#1e55be] mb-2 block">System Configuration</span>
+<h2 class="text-4xl font-extrabold text-on-surface tracking-tighter">Admin Settings</h2>
+</section>
+<!-- Section: General System Configuration -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<div class="lg:sticky lg:top-24">
+<h3 class="text-xl font-bold text-on-surface mb-2">General Configuration</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed opacity-60">Identity and fundamental operational settings for the DOMICOP database.</p>
+</div>
+<div class="lg:col-span-2">
+<div class="soft-ui-card rounded-2xl p-8 space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Cooperative Name</label>
+<input class="input-field w-full rounded-xl p-3 text-on-surface transition-all text-sm font-medium" type="text" value="DOMICOP Archive"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Operational Timezone</label>
+<select class="input-field w-full rounded-xl p-3 text-on-surface transition-all text-sm font-medium appearance-none">
+<option>UTC +01:00 (West Africa Time)</option>
+<option>UTC +00:00 (GMT)</option>
+<option>UTC -05:00 (Eastern Time)</option>
+</select>
+</div>
+</div>
+<div class="space-y-4">
+<label class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Cooperative Logo</label>
+<div class="flex items-center gap-6 p-5 bg-[#060e20] rounded-2xl border border-white/5">
+<div class="w-16 h-16 rounded-xl cobalt-gradient flex items-center justify-center overflow-hidden shadow-lg shadow-blue-900/20">
+<span class="material-symbols-outlined text-white text-3xl">account_balance</span>
+</div>
+<div>
+<button class="px-4 py-2 bg-surface-container-high text-on-surface text-xs font-bold rounded-lg hover:bg-surface-bright transition-colors border border-white/5">Replace Logo</button>
+<p class="text-[10px] text-on-surface-variant mt-2 opacity-40">PNG, JPG or SVG. Max 2MB.</p>
+</div>
+</div>
+</div>
+<div class="flex justify-end gap-3 pt-6 border-t border-white/5">
+<button class="px-5 py-2 text-xs font-bold text-on-surface-variant hover:text-on-surface transition-colors">Discard</button>
+<button class="px-6 py-2.5 text-xs font-black cobalt-gradient text-white rounded-lg shadow-xl shadow-blue-900/40 hover:brightness-110 active:scale-95 transition-all">Save Changes</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Member Management Rules -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<div class="lg:sticky lg:top-24">
+<h3 class="text-xl font-bold text-on-surface mb-2">Member Rules</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed opacity-60">Define how new members are onboarded and maintained within the ecosystem.</p>
+</div>
+<div class="lg:col-span-2">
+<div class="soft-ui-card rounded-2xl p-8 space-y-8">
+<div class="flex items-center justify-between p-5 bg-[#060e20] rounded-2xl border border-white/5">
+<div>
+<p class="text-sm font-bold text-on-surface">Automatic Member Approval</p>
+<p class="text-xs text-on-surface-variant opacity-50">Enable instant membership upon registration fee payment.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-[#171f33] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1e55be]"></div>
+</label>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Registration Fee (DOM)</label>
+<input class="input-field w-full rounded-xl p-3 text-on-surface transition-all text-sm font-medium" type="number" value="2500"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Suspension Grace Period (Days)</label>
+<input class="input-field w-full rounded-xl p-3 text-on-surface transition-all text-sm font-medium" type="number" value="30"/>
+</div>
+</div>
+<div class="p-5 bg-[#060e20] rounded-2xl border border-white/5">
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be] mb-4">Default Account Protocols</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-[#171f33] text-on-surface text-[10px] font-bold rounded-full border border-white/5 tracking-wider">KYC_VERIFIED</span>
+<span class="px-3 py-1 bg-[#171f33] text-on-surface text-[10px] font-bold rounded-full border border-white/5 tracking-wider">WALLET_ACTIVE</span>
+<span class="px-3 py-1 bg-[#171f33] text-on-surface text-[10px] font-bold rounded-full border border-white/5 tracking-wider">VOTING_ELIGIBLE</span>
+</div>
+</div>
+<div class="flex justify-end gap-3 pt-6 border-t border-white/5">
+<button class="px-5 py-2 text-xs font-bold text-on-surface-variant hover:text-on-surface transition-colors">Discard</button>
+<button class="px-6 py-2.5 text-xs font-black cobalt-gradient text-white rounded-lg shadow-xl shadow-blue-900/40 transition-all">Apply Rules</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Financial Protocols -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<div class="lg:sticky lg:top-24">
+<h3 class="text-xl font-bold text-on-surface mb-2">Financial Protocols</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed opacity-60">Core economic parameters for loans, dividends, and minimum reserves.</p>
+</div>
+<div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="soft-ui-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-[#1e55be]/10 rounded-full blur-2xl group-hover:bg-[#1e55be]/20 transition-all"></div>
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be] mb-4">Base Interest Rate</p>
+<h4 class="text-4xl font-extrabold text-white mb-2">4.50%</h4>
+<p class="text-xs text-on-surface-variant opacity-60 mb-6">Annual percentage rate for standard loans.</p>
+<button class="text-xs font-bold text-[#1e55be] flex items-center gap-2 hover:brightness-125">
+              Update Rate <span class="material-symbols-outlined text-sm">trending_up</span>
+</button>
+</div>
+<div class="soft-ui-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary/5 rounded-full blur-2xl group-hover:bg-tertiary/10 transition-all"></div>
+<p class="text-[10px] font-black uppercase tracking-widest text-tertiary mb-4">Dividend Distribution</p>
+<h4 class="text-2xl font-bold text-white mb-2">Quarterly</h4>
+<p class="text-xs text-on-surface-variant opacity-60 mb-6">Last distributed: Oct 12, 2023.</p>
+<button class="text-xs font-bold text-on-surface flex items-center gap-2 hover:text-[#1e55be] transition-colors">
+              Modify Schedule <span class="material-symbols-outlined text-sm">calendar_month</span>
+</button>
+</div>
+<div class="soft-ui-card p-8 rounded-2xl md:col-span-2">
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be] mb-6">Minimum Contribution Thresholds</p>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="p-4 bg-[#060e20] rounded-xl border border-white/5">
+<p class="text-[10px] text-on-surface-variant uppercase font-black opacity-40 mb-1">Entry Tier</p>
+<p class="text-xl font-bold text-on-surface">5,000</p>
+</div>
+<div class="p-4 bg-[#060e20] rounded-xl border border-white/5">
+<p class="text-[10px] text-on-surface-variant uppercase font-black opacity-40 mb-1">Standard Tier</p>
+<p class="text-xl font-bold text-on-surface">15,000</p>
+</div>
+<div class="p-4 bg-[#060e20] rounded-xl border-2 border-[#1e55be]/30 shadow-[0_0_15px_rgba(30,85,190,0.1)]">
+<p class="text-[10px] text-[#1e55be] uppercase font-black mb-1">Premium Tier</p>
+<p class="text-xl font-bold text-[#1e55be]">50,000</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Security & Access Control -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<div class="lg:sticky lg:top-24">
+<h3 class="text-xl font-bold text-on-surface mb-2">Security &amp; Access</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed opacity-60">Protect the archive with multi-layer authorization and role-based permissions.</p>
+</div>
+<div class="lg:col-span-2">
+<div class="soft-ui-card rounded-2xl overflow-hidden">
+<div class="p-8 pb-0">
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be] mb-6">Administrative Roles</p>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-4 bg-[#060e20] rounded-xl hover:bg-[#1e55be]/10 transition-all cursor-pointer group border border-white/5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-[#1e55be]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#1e55be]">verified_user</span>
+</div>
+<div>
+<p class="text-sm font-bold text-white">Super Administrator</p>
+<p class="text-[10px] text-on-surface-variant opacity-50">Full access to all settings and financial data.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-[#1e55be] transition-colors">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-[#060e20] rounded-xl hover:bg-[#1e55be]/10 transition-all cursor-pointer group border border-white/5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">analytics</span>
+</div>
+<div>
+<p class="text-sm font-bold text-white">Financial Auditor</p>
+<p class="text-[10px] text-on-surface-variant opacity-50">Read-only access to records, export permissions.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-[#1e55be] transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+<div class="p-8 space-y-6">
+<div class="flex items-center justify-between p-5 bg-[#060e20] rounded-2xl border border-white/5">
+<div>
+<p class="text-sm font-bold text-white">Enforce 2FA for Admins</p>
+<p class="text-xs text-on-surface-variant opacity-50">Mandatory Google Authenticator or SMS verification.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-[#171f33] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1e55be]"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-5 bg-[#060e20] rounded-2xl border border-white/5">
+<div>
+<p class="text-sm font-bold text-white">Session Timeout</p>
+<p class="text-xs text-on-surface-variant opacity-50">Auto-logout after inactivity.</p>
+</div>
+<select class="bg-[#171f33] border-none rounded-lg p-2 text-xs font-bold text-[#1e55be] focus:ring-1 focus:ring-primary/40 appearance-none px-4">
+<option>15 Minutes</option>
+<option selected="">30 Minutes</option>
+<option>1 Hour</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Integration & API -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<div class="lg:sticky lg:top-24">
+<h3 class="text-xl font-bold text-on-surface mb-2">Integrations</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed opacity-60">Connect DOMICOP with external banking rails and reporting tools.</p>
+</div>
+<div class="lg:col-span-2">
+<div class="soft-ui-card rounded-2xl p-8 space-y-8">
+<div>
+<div class="flex items-center justify-between mb-6">
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be]">Active Webhooks</p>
+<button class="text-[10px] font-black text-[#1e55be] px-3 py-1 bg-[#1e55be]/10 rounded-full hover:bg-[#1e55be]/20 transition-all border border-[#1e55be]/20">+ Add Gateway</button>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-4 bg-[#060e20] rounded-xl border border-white/5 group hover:border-[#1e55be]/30 transition-all">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#1e55be]">api</span>
+<div>
+<p class="text-sm font-bold text-white">Stripe_Global_Payments</p>
+<p class="text-[10px] text-on-surface-variant font-mono opacity-40">https://api.domicop.co/v1/webhook</p>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-green-500/10 text-green-400 text-[10px] font-black rounded uppercase tracking-tighter">Active</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-[#060e20] rounded-xl border border-white/5 group hover:border-[#1e55be]/30 transition-all">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#c3c6d5] opacity-50">api</span>
+<div>
+<p class="text-sm font-bold text-white opacity-80">Flutterwave_X_Sync</p>
+<p class="text-[10px] text-on-surface-variant font-mono opacity-40">https://pay.flutter.com/hook/8821</p>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-orange-500/10 text-orange-400 text-[10px] font-black rounded uppercase tracking-tighter">Pending</span>
+</div>
+</div>
+</div>
+<div>
+<p class="text-[10px] font-black uppercase tracking-widest text-[#1e55be] mb-6">Scheduled Data Exports</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<button class="p-6 bg-[#060e20] rounded-2xl border border-white/5 hover:border-[#1e55be]/40 transition-all text-left group">
+<span class="material-symbols-outlined text-[#1e55be] mb-3 text-3xl">description</span>
+<p class="text-sm font-bold text-white group-hover:text-[#1e55be] transition-colors">Monthly PDF Report</p>
+<p class="text-[10px] text-on-surface-variant opacity-40">Scheduled: 1st of month</p>
+</button>
+<button class="p-6 bg-[#060e20] rounded-2xl border border-white/5 hover:border-tertiary/40 transition-all text-left group">
+<span class="material-symbols-outlined text-tertiary mb-3 text-3xl">table_chart</span>
+<p class="text-sm font-bold text-white group-hover:text-tertiary transition-colors">Daily CSV Ledger</p>
+<p class="text-[10px] text-on-surface-variant opacity-40">Scheduled: 00:00 UTC</p>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Spacing -->
+<div class="h-20"></div>
+</div>
+</main>
+</body></html>
