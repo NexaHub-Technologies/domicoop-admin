@@ -1,29 +1,44 @@
 import { createRouter as createTanStackRouter } from "@tanstack/react-router"
 import { routeTree } from "./routeTree.gen"
 
-// Define the context type
+interface User {
+  id: string
+  adminId: string
+  name: string
+  email: string
+  role: string
+  avatar?: string
+}
+
 interface RouterContext {
   auth: {
     isAuthenticated: boolean
-    user: {
-      id: string
-      adminId: string
-      name: string
-      email: string
-      role: string
-      avatar?: string
-    } | null
+    user: User | null
   }
 }
 
+const AUTH_STORAGE_KEY = "domicop_auth"
+
+function getStoredAuth(): { isAuthenticated: boolean; user: User | null } {
+  if (typeof window === "undefined")
+    return { isAuthenticated: false, user: null }
+  try {
+    const stored = localStorage.getItem(AUTH_STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      return { isAuthenticated: !!parsed.user, user: parsed.user }
+    }
+  } catch {}
+  return { isAuthenticated: false, user: null }
+}
+
 export function getRouter() {
+  const storedAuth = getStoredAuth()
+
   const router = createTanStackRouter({
     routeTree,
     context: {
-      auth: {
-        isAuthenticated: false,
-        user: null,
-      },
+      auth: storedAuth,
     } as RouterContext,
     scrollRestoration: true,
     defaultPreload: "intent",

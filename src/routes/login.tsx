@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router"
+import { createFileRoute, redirect } from "@tanstack/react-router"
 import { useAuth } from "../providers/auth-provider"
 import { useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -13,6 +13,7 @@ import {
   Login01Icon,
   RefreshIcon,
 } from "@hugeicons/core-free-icons"
+import { useRouter } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/login")({
   beforeLoad: ({ context }) => {
@@ -25,20 +26,20 @@ export const Route = createFileRoute("/login")({
 })
 
 function LoginPage() {
-  const { login, isLoading } = useAuth()
   const router = useRouter()
+  const { login, isLoading } = useAuth()
   const [adminId, setAdminId] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault()
     setError("")
 
     const success = await login(adminId, password)
     if (success) {
-      // Navigate to dashboard after successful login
       router.navigate({ to: "/dashboard" })
     } else {
       setError('Invalid credentials. Try password: "password"')
@@ -63,8 +64,8 @@ function LoginPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex flex-grow items-center justify-center px-4 py-12">
-        <div className="flex w-full max-w-[440px] flex-col gap-8">
+      <main className="flex grow items-center justify-center px-4 py-12">
+        <div className="flex w-full max-w-110 flex-col gap-8">
           {/* Logo */}
           <div className="flex flex-col items-center space-y-2 text-center">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-[#e0e3e5] dark:bg-[#1e293b]">
@@ -124,7 +125,7 @@ function LoginPage() {
                     className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-slate-400"
                   />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
@@ -132,6 +133,7 @@ function LoginPage() {
                   />
                   <button
                     type="button"
+                    onClick={() => setShowPassword(!showPassword)}
                     className="absolute top-1/2 right-4 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
                   >
                     <HugeiconsIcon icon={ViewIcon} className="h-5 w-5" />
@@ -161,7 +163,7 @@ function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-br from-[#003d9a] to-[#1e55be] py-4 font-bold text-white shadow-lg transition-all duration-200 hover:opacity-90 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-linear-to-br from-[#003d9a] to-[#1e55be] py-4 font-bold text-white shadow-lg transition-all duration-200 hover:opacity-90 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isLoading ? (
                   <HugeiconsIcon

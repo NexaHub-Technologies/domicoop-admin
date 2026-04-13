@@ -394,3 +394,95 @@ export const activityFeed = [
     priority: "normal",
   },
 ]
+
+// Extended Contribution Data for Chart Time Ranges
+export const mockContributions1Y = [
+  { month: "Nov '22", amount: 165000 },
+  { month: "Dec '22", amount: 172000 },
+  { month: "Jan '23", amount: 180000 },
+  { month: "Feb '23", amount: 195000 },
+  { month: "Mar '23", amount: 210000 },
+  { month: "Apr '23", amount: 245000 },
+  { month: "May '23", amount: 280000 },
+  { month: "Jun '23", amount: 320000 },
+  { month: "Jul '23", amount: 295000 },
+  { month: "Aug '23", amount: 310000 },
+  { month: "Sep '23", amount: 340000 },
+  { month: "Oct '23", amount: 320000 },
+]
+
+export const mockContributionsAll = [
+  { month: "Nov '21", amount: 85000 },
+  { month: "Dec '21", amount: 92000 },
+  { month: "Jan '22", amount: 105000 },
+  { month: "Feb '22", amount: 118000 },
+  { month: "Mar '22", amount: 125000 },
+  { month: "Apr '22", amount: 138000 },
+  { month: "May '22", amount: 145000 },
+  { month: "Jun '22", amount: 152000 },
+  { month: "Jul '22", amount: 148000 },
+  { month: "Aug '22", amount: 155000 },
+  { month: "Sep '22", amount: 162000 },
+  { month: "Oct '22", amount: 170000 },
+  { month: "Nov '22", amount: 165000 },
+  { month: "Dec '22", amount: 172000 },
+  { month: "Jan '23", amount: 180000 },
+  { month: "Feb '23", amount: 195000 },
+  { month: "Mar '23", amount: 210000 },
+  { month: "Apr '23", amount: 245000 },
+  { month: "May '23", amount: 280000 },
+  { month: "Jun '23", amount: 320000 },
+  { month: "Jul '23", amount: 295000 },
+  { month: "Aug '23", amount: 310000 },
+  { month: "Sep '23", amount: 340000 },
+  { month: "Oct '23", amount: 320000 },
+]
+
+// Utility Functions
+export function filterMembersByStatus(
+  members: Member[],
+  status: "all" | "active" | "pending" | "inactive"
+): Member[] {
+  if (status === "all") return members
+  return members.filter((member) => member.status === status)
+}
+
+export function exportMembersToCSV(members: Member[]): string {
+  const headers = [
+    "ID",
+    "Name",
+    "Email",
+    "Status",
+    "Join Date",
+    "Contributions",
+    "Active Loans",
+  ]
+  const rows = members.map((member) => [
+    member.id,
+    member.name,
+    member.email,
+    member.status,
+    new Date(member.joinDate).toLocaleDateString(),
+    member.contributions.toString(),
+    member.activeLoans.toString(),
+  ])
+
+  const csvContent = [
+    headers.join(","),
+    ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+  ].join("\n")
+
+  return csvContent
+}
+
+export function downloadCSV(content: string, filename: string): void {
+  const blob = new Blob([content], { type: "text/csv;charset=utf-8;" })
+  const link = document.createElement("a")
+  const url = URL.createObjectURL(blob)
+  link.setAttribute("href", url)
+  link.setAttribute("download", filename)
+  link.style.visibility = "hidden"
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}

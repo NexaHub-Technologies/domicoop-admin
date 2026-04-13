@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useCallback } from "react"
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react"
 
 interface User {
   id: string
@@ -29,9 +35,26 @@ const MOCK_USER: User = {
   avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=admin",
 }
 
+const AUTH_STORAGE_KEY = "domicop_auth"
+
+function getStoredAuth(): { user: User | null } {
+  if (typeof window === "undefined") return { user: null }
+  try {
+    const stored = localStorage.getItem(AUTH_STORAGE_KEY)
+    if (stored) return JSON.parse(stored)
+  } catch {}
+  return { user: null }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const { user: storedUser } = getStoredAuth()
+    setUser(storedUser)
+    setIsLoading(false)
+  }, [])
 
   const login = useCallback(
     async (adminId: string, password: string): Promise<boolean> => {
@@ -42,7 +65,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Mock authentication - accept any admin ID with password "password"
       if (adminId && password === "password") {
-        setUser(MOCK_USER)
+        const userWithId = { ...MOCK_USER, adminId }
+        setUser(userWithId)
+        localStorage.setItem(
+          AUTH_STORAGE_KEY,
+          JSON.stringify({ user: userWithId })
+        )
         setIsLoading(false)
         return true
       }
@@ -55,6 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(() => {
     setUser(null)
+    localStorage.removeItem(AUTH_STORAGE_KEY)
   }, [])
 
   return (
