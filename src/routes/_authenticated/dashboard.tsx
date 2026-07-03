@@ -1,19 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { useState, useMemo } from "react"
-import {
-  dashboardStats,
-  mockMembers,
-  mockLoans,
-  activityFeed,
-  mockContributionsTrend,
-  mockContributions1Y,
-  mockContributionsAll,
-  filterMembersByStatus,
-  exportMembersToCSV,
-  downloadCSV,
-  type Member,
-  type Loan,
-} from "../../lib/mock-data"
+import { useState, useMemo, useEffect, useCallback } from "react"
+import { reportsApi } from "../../lib/api/reports"
+import { membersApi } from "../../lib/api/members"
+import { loansApi } from "../../lib/api/loans"
+import { contributionsApi } from "../../lib/api/contributions"
+import type { ReportSummary } from "../../lib/types/reports"
+import { formatKobo, formatNaira } from "../../lib/money"
+import type { Member } from "../../lib/types/auth"
+import type { Loan } from "../../lib/types/loans"
+import type { Contribution } from "../../lib/types/contributions"
 import {
   Card,
   CardContent,
@@ -64,62 +59,171 @@ const chartConfig = {
 
 type TimeRange = "6M" | "1Y" | "ALL"
 
+// --- Helpers ---
+
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2)
+}
+
+type ChartPoint = { month: string; amount: number }
+
+function aggregateContributions(
+  contributions: Contribution[],
+  monthsBack: number,
+): ChartPoint[] {
+  const groups = new Map<string, number>()
+  const now = new Date()
+  for (let i = monthsBack - 1; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`
+    groups.set(key, 0)
+  }
+  for (const c of contributions) {
+    const d = new Date(c.created_at)
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`
+    if (groups.has(key)) {
+      groups.set(key, (groups.get(key) ?? 0) + c.amount)
+    }
+  }
+  return Array.from(groups.entries()).map(([key, amount]) => {
+    const [y, m] = key.split("-")
+    const d = new Date(Number(y), Number(m) - 1, 1)
+    const label =
+      monthsBack > 12
+        ? d.toLocaleDateString("en-US", { month: "short", year: "2-digit" })
+        : d.toLocaleDateString("en-US", { month: "short" })
+    return { month: label, amount }
+  })
+}
+
+function computeChartData(contributions: Contribution[], range: TimeRange): ChartPoint[] {
+  const months = range === "6M" ? 6 : range === "1Y" ? 12 : 24
+  return aggregateContributions(contributions, months)
+}
+
+function relativeTime(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 1) return "just now"
+  if (mins < 60) return `${mins} min ago`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours} hour${hours > 1 ? "s" : ""} ago`
+  const days = Math.floor(hours / 24)
+  return `${days} day${days > 1 ? "s" : ""} ago`
+}
+
+// Derive the "System Events" feed from recent contributions (amounts are kobo).
+function mapContributionActivity(c: Contribution) {
+  return {
+    id: c.id,
+    type: "contribution",
+    message: `${c.member_name} — ${formatKobo(c.amount)} (${c.status})`,
+    time: relativeTime(c.created_at),
+    priority: (c.amount > 1000000 ? "high" : "normal") as "high" | "normal",
+  }
+}
+
+function exportMembersToCSV(members: Member[]): string {
+  const headers = ["ID", "Name", "Email", "Status", "Join Date"]
+  const rows = members.map((m) => [
+    m.id,
+    m.full_name,
+    m.email,
+    m.status,
+    new Date(m.created_at).toLocaleDateString(),
+  ])
+  return [
+    headers.join(","),
+    ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+  ].join("\n")
+}
+
+function downloadCSV(content: string, filename: string): void {
+  const blob = new Blob([content], { type: "text/csv;charset=utf-8;" })
+  const link = document.createElement("a")
+  const url = URL.createObjectURL(blob)
+  link.setAttribute("href", url)
+  link.setAttribute("download", filename)
+  link.style.visibility = "hidden"
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+
+// --- Component ---
+
 function DashboardPage() {
   const navigate = useNavigate()
 
-  // Phase 2: Chart Time Range State
+  // Data state
+  const [summary, setSummary] = useState<ReportSummary | null>(null)
+  const [members, setMembers] = useState<Member[]>([])
+  const [pendingLoansList, setPendingLoansList] = useState<Loan[]>([])
+  const [contributions, setContributions] = useState<Contribution[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // UI state
   const [timeRange, setTimeRange] = useState<TimeRange>("6M")
-
-  // Phase 3: Members Filter State
-  const [filterStatus, setFilterStatus] = useState<
-    "all" | "active" | "pending"
-  >("all")
+  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "pending">("all")
   const [editingMember, setEditingMember] = useState<Member | null>(null)
-
-  // Phase 4: Loan State
-  const [loans, setLoans] = useState<Loan[]>(mockLoans)
-  const [toast, setToast] = useState<{
-    message: string
-    type: "success" | "error"
-  } | null>(null)
-
-  // Phase 5: Add Member Modal State
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null)
   const [showAddMember, setShowAddMember] = useState(false)
-  const [members, setMembers] = useState<Member[]>(mockMembers)
 
-  // Chart data based on time range
-  const chartData = useMemo(() => {
-    switch (timeRange) {
-      case "6M":
-        return mockContributionsTrend
-      case "1Y":
-        return mockContributions1Y
-      case "ALL":
-        return mockContributionsAll
+  // Fetch all data
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const [summaryData, membersData, loansData, contributionsData] = await Promise.all([
+        reportsApi.getSummary({ year: new Date().getFullYear() }),
+        membersApi.list({ limit: 10 }),
+        loansApi.list({ status: "pending", limit: 5 }),
+        contributionsApi.list({ limit: 200 }),
+      ])
+      setSummary(summaryData)
+      setMembers(membersData.data)
+      setPendingLoansList(loansData.data)
+      setContributions(contributionsData.data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load dashboard data")
+    } finally {
+      setLoading(false)
     }
-  }, [timeRange])
+  }, [])
 
-  // Y-axis domain based on data
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  // Chart data from contributions
+  const chartData = useMemo(() => computeChartData(contributions, timeRange), [contributions, timeRange])
+
   const yAxisDomain = useMemo(() => {
+    if (chartData.length === 0) return [0, 1000]
     const maxAmount = Math.max(...chartData.map((d) => d.amount))
     return [0, Math.ceil(maxAmount / 50000) * 50000]
   }, [chartData])
 
-  // Filtered members
+  // Filtered members (client-side filter on fetched data)
   const filteredMembers = useMemo(() => {
-    return filterMembersByStatus(members, filterStatus).slice(0, 5)
+    const filtered = filterStatus === "all" ? members : members.filter((m) => m.status === filterStatus)
+    return filtered.slice(0, 5)
   }, [members, filterStatus])
 
-  // Pending loans
-  const pendingLoans = loans.filter((loan) => loan.status === "pending")
-
-  // Show toast notification
+  // Show toast
   const showToast = (message: string, type: "success" | "error") => {
     setToast({ message, type })
     setTimeout(() => setToast(null), 3000)
   }
 
-  // Handlers
+  // Export CSV
   const handleExportMembersCSV = () => {
     const csv = exportMembersToCSV(members)
     downloadCSV(csv, "members_export.csv")
@@ -134,37 +238,43 @@ function DashboardPage() {
     setEditingMember(member)
   }
 
-  const handleSaveMember = () => {
-    if (editingMember) {
-      setMembers((prev) =>
-        prev.map((m) => (m.id === editingMember.id ? editingMember : m))
-      )
+  const handleSaveMember = async () => {
+    if (!editingMember) return
+    try {
+      await membersApi.updateById(editingMember.id, { status: editingMember.status })
+      setMembers((prev) => prev.map((m) => (m.id === editingMember.id ? editingMember : m)))
       showToast(`Member #${editingMember.id} updated successfully!`, "success")
       setEditingMember(null)
+    } catch {
+      showToast("Failed to update member", "error")
     }
   }
 
-  const handleAddMember = (newMember: Omit<Member, "id" | "initials">) => {
-    const id = String(Math.max(...members.map((m) => parseInt(m.id))) + 1)
-    const initials = newMember.name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2)
-    const member: Member = { ...newMember, id, initials }
-    setMembers((prev) => [member, ...prev])
-    showToast(`Member ${newMember.name} added successfully!`, "success")
-    setShowAddMember(false)
+  const handleAddMember = async (data: { full_name: string; email: string; phone: string; address: string }) => {
+    try {
+      const newMember = await membersApi.create({
+        email: data.email,
+        password: "tempPassword123",
+        full_name: data.full_name,
+        phone: data.phone,
+        address: data.address,
+      })
+      setMembers((prev) => [newMember, ...prev])
+      showToast(`Member ${data.full_name} added successfully!`, "success")
+      setShowAddMember(false)
+    } catch {
+      showToast("Failed to add member", "error")
+    }
   }
 
-  const handleApproveLoan = (loanId: string) => {
-    setLoans((prev) =>
-      prev.map((loan) =>
-        loan.id === loanId ? { ...loan, status: "approved" } : loan
-      )
-    )
-    showToast(`Loan #${loanId} approved successfully!`, "success")
+  const handleApproveLoan = async (loanId: string) => {
+    try {
+      await loansApi.process(loanId, { status: "approved" })
+      setPendingLoansList((prev) => prev.filter((l) => l.id !== loanId))
+      showToast(`Loan #${loanId} approved successfully!`, "success")
+    } catch {
+      showToast("Failed to approve loan", "error")
+    }
   }
 
   const handleReviewLoan = (loanId: string) => {
@@ -177,6 +287,39 @@ function DashboardPage() {
 
   const handleViewLogs = () => {
     navigate({ to: "/logs" })
+  }
+
+  // --- Derived stats ---
+  const totalMembers = summary?.summary.total_members ?? 0
+  const totalContributionsKobo = summary?.contributions.total ?? 0
+  const dividendsPaid = summary?.dividends.total_paid ?? 0
+  const pendingLoanCount = pendingLoansList.length
+  const activityList = useMemo(
+    () => contributions.slice(0, 6).map(mapContributionActivity),
+    [contributions],
+  )
+
+  // --- Loading / Error states ---
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#003d9a] border-t-transparent" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-24">
+        <p className="text-sm text-red-600">{error}</p>
+        <button
+          onClick={fetchData}
+          className="rounded-lg bg-[#003d9a] px-4 py-2 text-sm font-bold text-white"
+        >
+          Retry
+        </button>
+      </div>
+    )
   }
 
   return (
@@ -230,28 +373,24 @@ function DashboardPage() {
         <StatCard
           icon={UserGroupIcon}
           label="Total Members"
-          value={dashboardStats.totalMembers.toLocaleString()}
-          trend={`+${dashboardStats.memberGrowth}%`}
-          trendType="positive"
+          value={totalMembers.toLocaleString()}
         />
         <StatCard
           icon={MoneySend01Icon}
           label="Total Contributions"
-          value={`$${(dashboardStats.totalContributions / 1000000).toFixed(1)}M`}
-          trend={`+${dashboardStats.contributionGrowth}%`}
-          trendType="positive"
+          value={formatKobo(totalContributionsKobo, true)}
         />
         <StatCard
           icon={Task01Icon}
           label="Pending Loans"
-          value={pendingLoans.length.toString()}
-          badge="URGENT"
+          value={pendingLoanCount.toString()}
+          badge={pendingLoanCount > 0 ? "URGENT" : undefined}
         />
         <StatCard
           icon={Message02Icon}
-          label="Active Correspondence"
-          value={dashboardStats.activeCorrespondence.toString()}
-          subLabel="Live"
+          label="Dividends Paid"
+          value={formatNaira(dividendsPaid, true)}
+          subLabel={`${summary?.dividends.count ?? 0} payouts`}
         />
       </section>
 
@@ -329,36 +468,42 @@ function DashboardPage() {
             <CardTitle className="text-lg sm:text-xl">System Events</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4 sm:space-y-6">
-              {activityFeed.map((activity) => (
-                <div key={activity.id} className="flex space-x-3 sm:space-x-4">
-                  <div
-                    className={`mt-1 h-2 w-2 flex-shrink-0 rounded-full shadow-sm ${
-                      activity.priority === "high"
-                        ? "bg-[#1e55be]"
-                        : activity.type === "system"
-                          ? "bg-[#9b3e00]"
-                          : "bg-slate-300 dark:bg-slate-600"
-                    }`}
-                  />
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-[#191c1e] dark:text-white">
-                      {activity.message}
-                    </p>
-                    <p className="text-xs text-slate-500 opacity-60 dark:text-slate-400">
-                      {activity.time}
-                    </p>
-                  </div>
+            {activityList.length === 0 ? (
+              <p className="text-sm text-slate-500">No recent activity</p>
+            ) : (
+              <>
+                <div className="space-y-4 sm:space-y-6">
+                  {activityList.map((activity) => (
+                    <div key={activity.id} className="flex space-x-3 sm:space-x-4">
+                      <div
+                        className={`mt-1 h-2 w-2 flex-shrink-0 rounded-full shadow-sm ${
+                          activity.priority === "high"
+                            ? "bg-[#1e55be]"
+                            : activity.type === "system"
+                              ? "bg-[#9b3e00]"
+                              : "bg-slate-300 dark:bg-slate-600"
+                        }`}
+                      />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-[#191c1e] dark:text-white">
+                          {activity.message}
+                        </p>
+                        <p className="text-xs text-slate-500 opacity-60 dark:text-slate-400">
+                          {activity.time}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <button
-              onClick={handleViewLogs}
-              className="mt-4 flex items-center justify-center text-sm font-bold text-[#003d9a] transition-all hover:underline sm:mt-6 dark:text-[#b2c5ff]"
-            >
-              View Full Logs
-              <HugeiconsIcon icon={ArrowRight01Icon} className="ml-1 h-4 w-4" />
-            </button>
+                <button
+                  onClick={handleViewLogs}
+                  className="mt-4 flex items-center justify-center text-sm font-bold text-[#003d9a] transition-all hover:underline sm:mt-6 dark:text-[#b2c5ff]"
+                >
+                  View Full Logs
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="ml-1 h-4 w-4" />
+                </button>
+              </>
+            )}
           </CardContent>
         </Card>
       </section>
@@ -433,11 +578,11 @@ function DashboardPage() {
                         <TableCell>
                           <div className="flex items-center gap-2 sm:gap-3">
                             <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-[10px] font-bold text-slate-600 sm:h-8 sm:w-8 dark:bg-slate-700 dark:text-slate-400">
-                              {member.initials}
+                              {getInitials(member.full_name)}
                             </div>
                             <div className="min-w-0">
                               <p className="truncate text-sm font-bold text-[#191c1e] dark:text-white">
-                                {member.name}
+                                {member.full_name}
                               </p>
                               <p className="hidden truncate text-xs text-slate-500 sm:block dark:text-slate-400">
                                 {member.email}
@@ -466,7 +611,7 @@ function DashboardPage() {
                           </Badge>
                         </TableCell>
                         <TableCell className="hidden text-sm text-slate-500 sm:table-cell dark:text-slate-400">
-                          {new Date(member.joinDate).toLocaleDateString(
+                          {new Date(member.created_at).toLocaleDateString(
                             "en-US",
                             {
                               month: "short",
@@ -521,10 +666,10 @@ function DashboardPage() {
           </CardHeader>
           <CardContent className="flex-1">
             <div className="space-y-3 sm:space-y-4">
-              {pendingLoans.length === 0 ? (
+              {pendingLoansList.length === 0 ? (
                 <p className="text-sm text-slate-500">No pending loans</p>
               ) : (
-                pendingLoans.slice(0, 2).map((loan, index) => (
+                pendingLoansList.slice(0, 2).map((loan, index) => (
                   <div
                     key={loan.id}
                     className={`rounded-xl border border-slate-50 p-3 shadow-sm sm:p-4 dark:border-slate-700 ${
@@ -541,7 +686,7 @@ function DashboardPage() {
                       {loan.type.charAt(0).toUpperCase() + loan.type.slice(1)}
                     </p>
                     <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                      By: {loan.borrowerName}
+                      By: {loan.member_name}
                     </p>
                     {index === 0 && (
                       <div className="mt-3 flex gap-2 sm:mt-4">
@@ -587,11 +732,9 @@ function DashboardPage() {
                 </label>
                 <input
                   type="text"
-                  value={editingMember.name}
-                  onChange={(e) =>
-                    setEditingMember({ ...editingMember, name: e.target.value })
-                  }
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  value={editingMember.full_name}
+                  disabled
+                  className="w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                 />
               </div>
               <div>
@@ -601,13 +744,8 @@ function DashboardPage() {
                 <input
                   type="email"
                   value={editingMember.email}
-                  onChange={(e) =>
-                    setEditingMember({
-                      ...editingMember,
-                      email: e.target.value,
-                    })
-                  }
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  disabled
+                  className="w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                 />
               </div>
               <div>
@@ -626,7 +764,7 @@ function DashboardPage() {
                 >
                   <option value="active">Active</option>
                   <option value="pending">Pending</option>
-                  <option value="inactive">Inactive</option>
+                  <option value="suspended">Suspended</option>
                 </select>
               </div>
             </div>
@@ -668,28 +806,17 @@ function AddMemberModal({
   onSubmit,
 }: {
   onClose: () => void
-  onSubmit: (member: Omit<Member, "id" | "initials">) => void
+  onSubmit: (data: { full_name: string; email: string; phone: string; address: string }) => void
 }) {
-  const [name, setName] = useState("")
+  const [full_name, setFullName] = useState("")
   const [email, setEmail] = useState("")
-  const [status, setStatus] = useState<"active" | "pending">("pending")
-  const joinDate = new Date().toISOString().split("T")[0]
-  const [contributions, setContributions] = useState(0)
-  const activeLoans = 0
+  const [phone, setPhone] = useState("")
+  const [address, setAddress] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!name || !email) {
-      return
-    }
-    onSubmit({
-      name,
-      email,
-      status,
-      joinDate,
-      contributions,
-      activeLoans,
-    })
+    if (!full_name || !email || !phone || !address) return
+    onSubmit({ full_name, email, phone, address })
   }
 
   return (
@@ -713,8 +840,8 @@ function AddMemberModal({
             </label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={full_name}
+              onChange={(e) => setFullName(e.target.value)}
               required
               className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
               placeholder="John Doe"
@@ -735,30 +862,28 @@ function AddMemberModal({
           </div>
           <div>
             <label className="mb-1 block text-xs font-semibold text-slate-500">
-              Status
+              Phone *
             </label>
-            <select
-              value={status}
-              onChange={(e) =>
-                setStatus(e.target.value as "active" | "pending")
-              }
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
               className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-            >
-              <option value="pending">Pending</option>
-              <option value="active">Active</option>
-            </select>
+              placeholder="+2348000000000"
+            />
           </div>
           <div>
             <label className="mb-1 block text-xs font-semibold text-slate-500">
-              Initial Contribution
+              Address *
             </label>
             <input
-              type="number"
-              value={contributions}
-              onChange={(e) => setContributions(Number(e.target.value))}
-              min="0"
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
               className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-              placeholder="0"
+              placeholder="123 Main St"
             />
           </div>
           <div className="flex gap-3 pt-2">

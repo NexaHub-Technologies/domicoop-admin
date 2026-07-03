@@ -1,9 +1,12 @@
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
+import { TooltipProvider } from "../components/ui/tooltip"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 
 import { ThemeProvider } from "../providers/theme-provider"
 import { AuthProvider } from "../providers/auth-provider"
+import { NotificationsProvider } from "../providers/notifications-provider"
+import { getStoredAuth } from "../lib/auth-storage"
 import appCss from "../styles.css?url"
 
 export const Route = createRootRoute({
@@ -22,6 +25,7 @@ export const Route = createRootRoute({
       },
     ],
     links: [
+      { rel: "icon", href: "/favicon.ico" },
       {
         rel: "stylesheet",
         href: appCss,
@@ -39,9 +43,16 @@ export const Route = createRootRoute({
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap",
       },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap",
+      },
     ],
   }),
   shellComponent: RootDocument,
+  beforeLoad: () => {
+    return { auth: getStoredAuth() }
+  },
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -51,9 +62,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </ThemeProvider>
+        <TooltipProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              <NotificationsProvider>{children}</NotificationsProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </TooltipProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",

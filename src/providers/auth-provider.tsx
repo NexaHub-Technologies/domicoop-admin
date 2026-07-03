@@ -5,49 +5,35 @@ import {
   useCallback,
   useEffect,
 } from "react"
+import { authApi } from "../lib/api/auth"
+import { adminsApi } from "../lib/api/admins"
+import { session } from "../lib/session"
+import { ApiError } from "../lib/http"
+import {
+  getStoredAuth,
+  setStoredUser,
+  clearStoredAuth,
+  displayNameFromEmail,
+  type AdminUser,
+} from "../lib/auth-storage"
 
-interface User {
-  id: string
-  adminId: string
-  name: string
-  email: string
-  role: "super_admin" | "financial_auditor" | "admin"
-  avatar?: string
+interface LoginResult {
+  ok: boolean
+  error?: string
 }
 
 interface AuthContextType {
-  user: User | null
+  user: AdminUser | null
   isAuthenticated: boolean
   isLoading: boolean
-  login: (adminId: string, password: string) => Promise<boolean>
-  logout: () => void
+  login: (email: string, password: string) => Promise<LoginResult>
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// Mock user data
-const MOCK_USER: User = {
-  id: "admin-001",
-  adminId: "ADMIN001",
-  name: "Co-op Admin",
-  email: "admin@domicop.com",
-  role: "super_admin",
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=admin",
-}
-
-const AUTH_STORAGE_KEY = "domicop_auth"
-
-function getStoredAuth(): { user: User | null } {
-  if (typeof window === "undefined") return { user: null }
-  try {
-    const stored = localStorage.getItem(AUTH_STORAGE_KEY)
-    if (stored) return JSON.parse(stored)
-  } catch {}
-  return { user: null }
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<AdminUser | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -57,33 +43,70 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = useCallback(
-    async (adminId: string, password: string): Promise<boolean> => {
+    async (email: string, password: string): Promise<LoginResult> => {
       setIsLoading(true)
+      try {
+        const res = await authApi.login({ email, password })
 
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 800))
+        // Gate the admin portal on role (§2). A member authenticates fine but
+        // every admin route 403s, so reject them here with a clear message.
+        if (res.user.role !== "admin") {
+          await session.clearTokens()
+          clearStoredAuth()
+          return {
+            ok: false,
+            error: "This account does not have admin access.",
+          }
+        }
 
-      // Mock authentication - accept any admin ID with password "password"
-      if (adminId && password === "password") {
-        const userWithId = { ...MOCK_USER, adminId }
-        setUser(userWithId)
-        localStorage.setItem(
-          AUTH_STORAGE_KEY,
-          JSON.stringify({ user: userWithId })
-        )
+        await session.setTokens(res.access_token, res.refresh_token)
+
+        // Fetch the admin profile to get the authoritative full_name.
+        let fullName = res.user.full_name
+        let avatarUrl = res.user.avatar_url
+        try {
+          const profiles = await adminsApi.list()
+          const profile = profiles.find((p) => p.email === res.user.email)
+          if (profile) {
+            fullName = profile.full_name
+            avatarUrl = profile.avatar_url ?? undefined
+          }
+        } catch {
+          // Admin list endpoint unavailable; fall through to login-response values.
+        }
+
+        const adminUser: AdminUser = {
+          id: res.user.id,
+          email: res.user.email,
+          role: res.user.role,
+          name: fullName || displayNameFromEmail(res.user.email),
+          avatar_url: avatarUrl,
+        }
+        setStoredUser(adminUser)
+        setUser(adminUser)
+        return { ok: true }
+      } catch (err) {
+        const error =
+          err instanceof ApiError
+            ? err.message
+            : "Unable to sign in. Please try again."
+        return { ok: false, error }
+      } finally {
         setIsLoading(false)
-        return true
       }
-
-      setIsLoading(false)
-      return false
     },
-    []
+    [],
   )
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async (): Promise<void> => {
+    try {
+      await authApi.logout()
+    } catch {
+      // best-effort — clear local state regardless
+    }
+    await session.clearTokens()
+    clearStoredAuth()
     setUser(null)
-    localStorage.removeItem(AUTH_STORAGE_KEY)
   }, [])
 
   return (
