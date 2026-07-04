@@ -6,11 +6,11 @@ import { Logo } from "../components/logo"
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy · DOMICOP" },
+      { title: "Privacy Policy · DOMICOOP" },
       {
         name: "description",
         content:
-          "How the DOMICOP Cooperative Society app collects, uses, protects and shares your personal, financial and device data.",
+          "How the DOMICOOP (Dominion Cooperative Society) app collects, uses, protects and shares your personal, financial and device data.",
       },
     ],
   }),
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/privacy")({
 // fill the bracketed placeholders (legal entity, registered address, governing
 // law, and the contact address) with your society's real details.
 const LAST_UPDATED = "3 July 2026"
-const CONTACT_EMAIL = "privacy@domicop.com"
+const CONTACT_EMAIL = "domicorp14@gmail.com"
 
 const SECTIONS: { id: string; title: string }[] = [
   { id: "overview", title: "Overview" },
@@ -48,7 +48,7 @@ function PrivacyPage() {
           <div className="flex items-center gap-2.5">
             <Logo className="h-8 w-8" />
             <span className="font-display text-lg font-semibold tracking-tight">
-              DOMICOP
+              DOMICOOP
             </span>
           </div>
           <Link
@@ -63,7 +63,7 @@ function PrivacyPage() {
 
       <main className="mx-auto max-w-3xl px-5 py-10 sm:px-6 sm:py-14">
         <p className="text-xs font-bold tracking-[0.2em] text-[#003d9a] uppercase dark:text-[#b2c5ff]">
-          DOMICOP Cooperative Society
+          DOMICOOP (Dominion Cooperative Society)
         </p>
         <h1 className="mt-2 font-display text-4xl font-medium tracking-tight sm:text-5xl">
           Privacy Policy
@@ -74,11 +74,10 @@ function PrivacyPage() {
 
         <p className="mt-6 leading-relaxed text-muted-foreground">
           This policy explains what personal, financial and device information
-          the DOMICOP Cooperative Society (&ldquo;DOMICOP&rdquo;,
-          &ldquo;we&rdquo;, &ldquo;us&rdquo;) collects through its member app and
-          administration portal, why we collect it, how we protect it, and the
-          choices you have. It applies to members, prospective members and
-          administrators who use our services.
+          the DOMICOOP (Dominion Cooperative Society) collects through its
+          member app and administration portal, why we collect it, how we
+          protect it, and the choices you have. It applies to members,
+          prospective members and administrators who use our services.
         </p>
 
         {/* Table of contents */}
@@ -108,7 +107,7 @@ function PrivacyPage() {
 
         <Section id="overview" index={1} title="Overview">
           <P>
-            DOMICOP is a cooperative thrift and credit society. To run the
+            DOMICOOP is a cooperative thrift and credit society. To run the
             society we keep an accurate record of each member&apos;s standing —
             their contributions, loans and dividends — and we use trusted
             payment and messaging providers to move money and send updates.
@@ -191,10 +190,10 @@ function PrivacyPage() {
             provider. When money moves to or from your account, the relevant
             details (such as your bank account number and bank code) are shared
             with Paystack to complete the transfer. Paystack processes this
-            information under its own privacy terms and applicable payment-industry
-            security standards. We store transaction references and status so
-            your society records stay accurate, but we do not store full card
-            details.
+            information under its own privacy terms and applicable
+            payment-industry security standards. We store transaction references
+            and status so your society records stay accurate, but we do not
+            store full card details.
           </P>
         </Section>
 
@@ -219,8 +218,8 @@ function PrivacyPage() {
 
         <Section id="sharing" index={6} title="How we share information">
           <P>
-            We do not sell your personal data. We share it only in these
-            limited circumstances:
+            We do not sell your personal data. We share it only in these limited
+            circumstances:
           </P>
           <List
             items={[
@@ -253,8 +252,8 @@ function PrivacyPage() {
           />
           <P>
             No system can be guaranteed perfectly secure, but we work
-            continuously to protect your information and to respond quickly if an
-            issue arises.
+            continuously to protect your information and to respond quickly if
+            an issue arises.
           </P>
         </Section>
 
@@ -278,10 +277,10 @@ function PrivacyPage() {
 
         <Section id="children" index={10} title="Children's privacy">
           <P>
-            The DOMICOP app is intended for members of the cooperative and is not
-            directed to children. We do not knowingly collect personal
-            information from anyone below the age of membership. If you believe a
-            minor has provided us information, please contact us and we will
+            The DOMICOOP app is intended for members of the cooperative and is
+            not directed to children. We do not knowingly collect personal
+            information from anyone below the age of membership. If you believe
+            a minor has provided us information, please contact us and we will
             delete it.
           </P>
         </Section>
@@ -301,7 +300,9 @@ function PrivacyPage() {
             information, contact us at:
           </P>
           <div className="mt-3 rounded-xl border border-border bg-muted/40 p-5 text-sm">
-            <p className="font-semibold">DOMICOP Cooperative Society</p>
+            <p className="font-semibold">
+              DOMICOOP (Dominion Cooperative Society)
+            </p>
             <p className="mt-1 text-muted-foreground">
               Email:{" "}
               <a
@@ -318,7 +319,7 @@ function PrivacyPage() {
         </Section>
 
         <footer className="mt-14 border-t border-border pt-6 text-xs tracking-[0.16em] text-muted-foreground uppercase">
-          © {new Date().getFullYear()} DOMICOP Cooperative Society
+          © {new Date().getFullYear()} DOMICOOP (Dominion Cooperative Society)
         </footer>
       </main>
     </div>
@@ -361,13 +362,7 @@ function P({ children }: { children: React.ReactNode }) {
   return <p className="leading-relaxed text-muted-foreground">{children}</p>
 }
 
-function A({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) {
+function A({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <a href={href} className="text-[#2f6be0] hover:underline">
       {children}
@@ -379,7 +374,10 @@ function List({ items }: { items: string[] }) {
   return (
     <ul className="space-y-2">
       {items.map((item, i) => (
-        <li key={i} className="flex gap-2.5 leading-relaxed text-muted-foreground">
+        <li
+          key={i}
+          className="flex gap-2.5 leading-relaxed text-muted-foreground"
+        >
           <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#e6a93b]" />
           <span>{item}</span>
         </li>

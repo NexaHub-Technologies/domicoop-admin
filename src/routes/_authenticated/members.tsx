@@ -132,7 +132,7 @@ function MembersPage() {
         (m) =>
           m.full_name.toLowerCase().includes(q) ||
           m.email.toLowerCase().includes(q) ||
-          (m.member_no ?? "").toLowerCase().includes(q),
+          (m.member_no ?? "").toLowerCase().includes(q)
       )
     }
     return result
@@ -141,7 +141,7 @@ function MembersPage() {
   const growthData = useMemo(() => computeGrowth(members), [members])
   const pendingCount = useMemo(
     () => members.filter((m) => m.status === "pending").length,
-    [members],
+    [members]
   )
   const totalPages = total ? Math.ceil(total / PAGE_SIZE) : 1
 
@@ -154,14 +154,14 @@ function MembersPage() {
     } catch (err) {
       showToast(
         err instanceof ApiError ? err.message : "Failed to create member",
-        "error",
+        "error"
       )
     }
   }
 
   const handleUpdateMember = async (
     id: string,
-    data: { status?: Member["status"]; member_no?: string },
+    data: { status?: Member["status"]; member_no?: string }
   ) => {
     try {
       await membersApi.updateById(id, data)
@@ -171,7 +171,7 @@ function MembersPage() {
     } catch (err) {
       showToast(
         err instanceof ApiError ? err.message : "Failed to update member",
-        "error",
+        "error"
       )
     }
   }
@@ -185,7 +185,7 @@ function MembersPage() {
     } catch (err) {
       showToast(
         err instanceof ApiError ? err.message : "Failed to approve member",
-        "error",
+        "error"
       )
     }
   }
@@ -198,7 +198,7 @@ function MembersPage() {
     } catch (err) {
       showToast(
         err instanceof ApiError ? err.message : "Failed to send broadcast",
-        "error",
+        "error"
       )
     }
   }
@@ -270,7 +270,7 @@ function MembersPage() {
                   ? "All Members"
                   : status.charAt(0).toUpperCase() + status.slice(1)}
               </button>
-            ),
+            )
           )}
           <div className="relative ml-auto">
             <HugeiconsIcon
@@ -393,7 +393,7 @@ function MembersPage() {
                       <TableCell className="hidden text-sm text-slate-500 md:table-cell dark:text-slate-400">
                         {new Date(member.created_at).toLocaleDateString(
                           "en-US",
-                          { month: "short", day: "numeric", year: "numeric" },
+                          { month: "short", day: "numeric", year: "numeric" }
                         )}
                       </TableCell>
                       <TableCell className="text-right">
@@ -415,7 +415,10 @@ function MembersPage() {
                             params={{ memberId: member.id }}
                             className="p-1 text-slate-400 transition-colors hover:text-[#003d9a] sm:p-2 dark:hover:text-[#b2c5ff]"
                           >
-                            <HugeiconsIcon icon={ViewIcon} className="h-5 w-5" />
+                            <HugeiconsIcon
+                              icon={ViewIcon}
+                              className="h-5 w-5"
+                            />
                           </Link>
                           <button
                             onClick={() => setEditingMember(member)}
@@ -522,14 +525,20 @@ function MembersPage() {
                 onClick={() => setShowBroadcastModal(true)}
                 className="w-full bg-white/10 text-white hover:bg-white/20"
               >
-                <HugeiconsIcon icon={Megaphone01Icon} className="mr-2 h-4 w-4" />
+                <HugeiconsIcon
+                  icon={Megaphone01Icon}
+                  className="mr-2 h-4 w-4"
+                />
                 Member Broadcast
               </Button>
               <Button
                 onClick={() => navigate({ to: "/announcements" })}
                 className="w-full bg-white/10 text-white hover:bg-white/20"
               >
-                <HugeiconsIcon icon={Megaphone01Icon} className="mr-2 h-4 w-4" />
+                <HugeiconsIcon
+                  icon={Megaphone01Icon}
+                  className="mr-2 h-4 w-4"
+                />
                 Announcements
               </Button>
             </div>
@@ -700,7 +709,7 @@ function EditMemberModal({
             type="text"
             value={memberNo}
             onChange={(e) => setMemberNo(e.target.value)}
-            placeholder="DOMICOP-0007"
+            placeholder="DOMICOOP-0007"
             className={inputCls}
           />
         </Field>

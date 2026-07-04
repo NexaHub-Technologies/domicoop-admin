@@ -1,5 +1,5 @@
-const ACCESS_TOKEN_KEY = "domicop_access_token"
-const REFRESH_TOKEN_KEY = "domicop_refresh_token"
+const ACCESS_TOKEN_KEY = "domicoop_access_token"
+const REFRESH_TOKEN_KEY = "domicoop_refresh_token"
 
 export const session = {
   async getToken(): Promise<string | null> {

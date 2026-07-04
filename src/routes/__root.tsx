@@ -21,7 +21,10 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "DOMICOP Admin",
+        title: "DOMICOOP Admin",
+        name: "description",
+        content:
+          "Dominion Co-operative is a thrift & credit society — members, contributions, loans and dividends, kept in balance and on the record.",
       },
     ],
     links: [

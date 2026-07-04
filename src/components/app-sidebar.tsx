@@ -70,7 +70,7 @@ export function AppSidebar() {
             >
               <Logo className="size-9" />
               <div className="grid flex-1 text-left text-base leading-tight">
-                <span className="truncate font-semibold">DOMICOP</span>
+                <span className="truncate font-semibold">DOMICOOP</span>
                 <span className="truncate text-sm text-muted-foreground">
                   Cooperative Society
                 </span>

@@ -58,7 +58,7 @@ function SupportPage() {
             Email Support
           </h3>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Send us an email at support@domicop.com
+            Send us an email at domicorp14@gmail.com
           </p>
         </div>
       </div>

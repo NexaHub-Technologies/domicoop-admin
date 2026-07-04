@@ -2,7 +2,7 @@
 // gate (__root.tsx / router.tsx) and the AuthProvider both read/write through
 // here so they never drift apart.
 
-export const AUTH_STORAGE_KEY = "domicop_auth"
+export const AUTH_STORAGE_KEY = "domicoop_auth"
 
 // Minimal admin identity we keep in localStorage. The login response (§2) is
 // `{ id, email, role, email_verified }`; `name`/`avatar_url` are derived/optional
@@ -21,7 +21,8 @@ export interface StoredAuth {
 }
 
 export function getStoredAuth(): StoredAuth {
-  if (typeof window === "undefined") return { isAuthenticated: false, user: null }
+  if (typeof window === "undefined")
+    return { isAuthenticated: false, user: null }
   try {
     const stored = localStorage.getItem(AUTH_STORAGE_KEY)
     if (stored) {

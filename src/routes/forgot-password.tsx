@@ -112,7 +112,7 @@ function ForgotPasswordPage() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@domicop.com"
+              placeholder="admin@domicoop.com"
               required
               className={authInputCls}
             />
@@ -125,7 +125,10 @@ function ForgotPasswordPage() {
           className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-br from-[#2f6be0] to-[#003d9a] py-3 text-sm font-semibold text-white shadow-lg shadow-[#2f6be0]/25 transition-all hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {sending ? (
-            <HugeiconsIcon icon={RefreshIcon} className="h-5 w-5 animate-spin" />
+            <HugeiconsIcon
+              icon={RefreshIcon}
+              className="h-5 w-5 animate-spin"
+            />
           ) : (
             <>
               Send reset link

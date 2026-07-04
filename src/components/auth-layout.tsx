@@ -32,7 +32,7 @@ export function AuthLayout({
           <Logo className="h-11 w-11" />
           <div className="leading-tight">
             <p className="font-display text-xl font-semibold tracking-tight">
-              DOMICOP
+              DOMICOOP
             </p>
             <p className="text-[11px] font-medium tracking-[0.22em] text-white/50 uppercase">
               Cooperative Society
@@ -62,7 +62,7 @@ export function AuthLayout({
         </div>
 
         <p className="relative text-[11px] tracking-[0.18em] text-white/35 uppercase">
-          © {new Date().getFullYear()} DOMICOP · Secure Portal
+          © {new Date().getFullYear()} DOMICOOP · Secure Portal
         </p>
       </aside>
 
@@ -72,7 +72,7 @@ export function AuthLayout({
         <div className="mb-10 flex items-center gap-2.5 lg:hidden">
           <Logo className="h-9 w-9" />
           <span className="font-display text-lg font-semibold tracking-tight text-foreground">
-            DOMICOP
+            DOMICOOP
           </span>
         </div>
 

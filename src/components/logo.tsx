@@ -6,7 +6,7 @@ export function Logo({ className = "" }: { className?: string }) {
   return (
     <img
       src={resolvedTheme === "dark" ? "/dark-logo.png" : "/light-logo.png"}
-      alt="DOMICOP"
+      alt="DOMICOOP"
       className={className}
     />
   )
