@@ -15,7 +15,13 @@ const config = defineConfig({
       projects: ["./tsconfig.json"],
     }),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart({
+      // Disable SSR — render as a client-side SPA.
+      // The server only prerenders the root shell; all routes render on the client.
+      spa: {
+        enabled: true,
+      },
+    }),
     viteReact(),
   ],
 })
