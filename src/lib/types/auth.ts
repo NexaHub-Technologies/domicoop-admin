@@ -32,11 +32,6 @@ export interface ResendVerificationInput {
   email: string
 }
 
-export interface OAuthGoogleInput {
-  id_token: string
-  nonce?: string
-}
-
 export interface ChangePasswordInput {
   current_password: string
   new_password: string

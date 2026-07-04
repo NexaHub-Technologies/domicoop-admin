@@ -6,7 +6,6 @@ import type {
   ResetPasswordInput,
   ConfirmResetInput,
   ResendVerificationInput,
-  OAuthGoogleInput,
   ChangePasswordInput,
   ExpoTokenInput,
   AuthResponse,
@@ -54,20 +53,6 @@ export const authApi = {
 
   resendVerification: async (data: ResendVerificationInput): Promise<void> => {
     await request("/v1/auth/resend-verification", {
-      method: "POST",
-      body: data,
-    })
-  },
-
-  oauthGoogle: async (data: OAuthGoogleInput): Promise<AuthResponse> => {
-    return request<AuthResponse>("/v1/auth/oauth/google", {
-      method: "POST",
-      body: data,
-    })
-  },
-
-  linkGoogle: async (data: OAuthGoogleInput): Promise<void> => {
-    await request("/v1/auth/link/google", {
       method: "POST",
       body: data,
     })

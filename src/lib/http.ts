@@ -8,7 +8,7 @@ if (!BASE_URL) {
   )
 }
 
-const REQUEST_TIMEOUT_MS = 20000
+const REQUEST_TIMEOUT_MS = 60000
 
 export class ApiError extends Error {
   status: number
