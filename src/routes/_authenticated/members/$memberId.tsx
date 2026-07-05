@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react"
 import { membersApi } from "../../../lib/api/members"
 import type { Member } from "../../../lib/types/auth"
 import type { MemberStatement, StatementEntry } from "../../../lib/types/members"
-import { formatKobo, formatNaira } from "../../../lib/money"
+import { formatNaira } from "../../../lib/money"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowLeft01Icon,
@@ -26,12 +26,8 @@ function getInitials(name: string): string {
     .slice(0, 2)
 }
 
-// Statement amounts are mixed units: contributions & repayments are kobo,
-// loans & dividends are naira (contract §1).
+// Statement amounts are all in naira.
 function formatEntryAmount(entry: StatementEntry): string {
-  if (entry.type === "contribution" || entry.type === "repayment") {
-    return formatKobo(entry.amount)
-  }
   return formatNaira(entry.amount)
 }
 
@@ -171,7 +167,7 @@ function MemberDetailPage() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <StatCard
               label="Total Contributions"
-              value={formatKobo(statement?.summary.total_contributions ?? 0)}
+              value={formatNaira(statement?.summary.total_contributions ?? 0)}
             />
             <StatCard
               label="Total Loans"

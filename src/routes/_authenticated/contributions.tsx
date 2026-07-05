@@ -6,7 +6,7 @@ import type {
   Contribution,
   UpdateContributionStatusInput,
 } from "../../lib/types/contributions"
-import { formatKobo } from "../../lib/money"
+import { formatNaira } from "../../lib/money"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -308,7 +308,7 @@ function ContributionsPage() {
                         </p>
                       </TableCell>
                       <TableCell className="font-bold text-[#191c1e] dark:text-white">
-                        {formatKobo(c.amount)}
+                        {formatNaira(c.amount)}
                       </TableCell>
                       <TableCell className="hidden text-sm text-slate-600 sm:table-cell dark:text-slate-400">
                         {c.month} {c.year}
@@ -393,7 +393,7 @@ function ContributionsPage() {
                 {reviewing.member_name} · {reviewing.member_no}
               </p>
               <p className="text-slate-500 dark:text-slate-400">
-                {formatKobo(reviewing.amount)} · {reviewing.month}{" "}
+                {formatNaira(reviewing.amount)} · {reviewing.month}{" "}
                 {reviewing.year}
               </p>
               {reviewing.transaction_ref && (

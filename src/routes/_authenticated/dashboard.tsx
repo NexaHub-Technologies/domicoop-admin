@@ -5,7 +5,7 @@ import { membersApi } from "../../lib/api/members"
 import { loansApi } from "../../lib/api/loans"
 import { contributionsApi } from "../../lib/api/contributions"
 import type { ReportSummary } from "../../lib/types/reports"
-import { formatKobo, formatNaira } from "../../lib/money"
+import { formatNaira } from "../../lib/money"
 import type { Member } from "../../lib/types/auth"
 import type { Loan } from "../../lib/types/loans"
 import type { Contribution } from "../../lib/types/contributions"
@@ -117,14 +117,14 @@ function relativeTime(dateStr: string): string {
   return `${days} day${days > 1 ? "s" : ""} ago`
 }
 
-// Derive the "System Events" feed from recent contributions (amounts are kobo).
+// Derive the "System Events" feed from recent contributions (amounts are naira).
 function mapContributionActivity(c: Contribution) {
   return {
     id: c.id,
     type: "contribution",
-    message: `${c.member_name} — ${formatKobo(c.amount)} (${c.status})`,
+    message: `${c.member_name} — ${formatNaira(c.amount)} (${c.status})`,
     time: relativeTime(c.created_at),
-    priority: (c.amount > 1000000 ? "high" : "normal") as "high" | "normal",
+    priority: (c.amount > 10000 ? "high" : "normal") as "high" | "normal",
   }
 }
 
@@ -291,7 +291,7 @@ function DashboardPage() {
 
   // --- Derived stats ---
   const totalMembers = summary?.summary.total_members ?? 0
-  const totalContributionsKobo = summary?.contributions.total ?? 0
+  const totalContributionsNaira = summary?.contributions.total ?? 0
   const dividendsPaid = summary?.dividends.total_paid ?? 0
   const pendingLoanCount = pendingLoansList.length
   const activityList = useMemo(
@@ -378,7 +378,7 @@ function DashboardPage() {
         <StatCard
           icon={MoneySend01Icon}
           label="Total Contributions"
-          value={formatKobo(totalContributionsKobo, true)}
+          value={formatNaira(totalContributionsNaira, true)}
         />
         <StatCard
           icon={Task01Icon}

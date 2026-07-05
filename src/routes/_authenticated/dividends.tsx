@@ -6,7 +6,7 @@ import type {
   Dividend,
   PreviewDividendResponse,
 } from "../../lib/types/dividends"
-import { formatKobo, formatNaira } from "../../lib/money"
+import { formatNaira } from "../../lib/money"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -31,10 +31,9 @@ export const Route = createFileRoute("/_authenticated/dividends")({
 })
 
 const statusStyles: Record<string, string> = {
-  paid: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
   processing:
     "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  success: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
   failed: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 }
 
@@ -213,7 +212,7 @@ function DividendsPage() {
                     {formatNaira(preview.total_amount)} pool
                   </span>
                   <span className="text-xs text-slate-400">
-                    total contrib {formatKobo(preview.grand_total_contributions)}
+                    total contrib {formatNaira(preview.grand_total_contributions)}
                   </span>
                 </div>
                 <div className="max-h-64 space-y-2 overflow-y-auto">
@@ -227,7 +226,7 @@ function DividendsPage() {
                           {p.full_name}
                         </p>
                         <p className="text-xs text-slate-400">
-                          {p.member_no} · contrib {formatKobo(p.contribution_amount)}
+                          {p.member_no} · contrib {formatNaira(p.contribution_amount)}
                         </p>
                       </div>
                       <p className="text-sm font-bold text-green-600">
@@ -305,9 +304,9 @@ function DividendsPage() {
                       <TableRow key={d.id}>
                         <TableCell>
                           <p className="text-sm font-bold text-[#191c1e] dark:text-white">
-                            {d.member_name}
+                            {d.profiles.full_name}
                           </p>
-                          <p className="text-xs text-slate-500">{d.member_no}</p>
+                          <p className="text-xs text-slate-500">{d.profiles.member_no}</p>
                         </TableCell>
                         <TableCell className="font-bold text-[#191c1e] dark:text-white">
                           {formatNaira(d.amount)}

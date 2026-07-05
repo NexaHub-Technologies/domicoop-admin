@@ -1,18 +1,20 @@
 export interface Dividend {
   id: string
   member_id: string
-  member_no: string
-  member_name: string
   amount: number // naira
   year: number
-  status: "pending" | "paid" | "failed"
-  paid_at?: string
+  paystack_transfer_ref: string | null
+  status: "processing" | "success" | "failed"
   created_at: string
+  profiles: {
+    full_name: string
+    member_no: string | null
+  }
 }
 
 export interface DividendsListResponse {
   data: Dividend[]
-  total: number | null
+  total: null
 }
 
 export interface PreviewDividendInput {
@@ -20,14 +22,12 @@ export interface PreviewDividendInput {
   total_amount: number // pool to share, in NAIRA
 }
 
-// POST /dividends/preview (§7). NOTE the mixed money units:
-// `contribution_amount` and `grand_total_contributions` are KOBO (read straight
-// from the contributions table); `dividend_amount` is NAIRA.
+// POST /dividends/preview.
 export interface DividendPreviewEntry {
   member_id: string
   full_name: string
   member_no: string
-  contribution_amount: number // kobo
+  contribution_amount: number // naira
   dividend_amount: number // naira
 }
 
@@ -35,7 +35,7 @@ export interface PreviewDividendResponse {
   year: number
   total_amount: number // naira
   total_members: number
-  grand_total_contributions: number // kobo
+  grand_total_contributions: number // naira
   preview: DividendPreviewEntry[]
 }
 
@@ -47,7 +47,7 @@ export interface DistributeDividendInput {
   }[]
 }
 
-// POST /dividends/distribute (§7) — per-member outcome; not transactional.
+// POST /dividends/distribute — per-member outcome; not transactional.
 export interface DistributeResultEntry {
   member_id: string
   status: "processing" | "failed"
