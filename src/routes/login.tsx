@@ -38,7 +38,7 @@ function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault()
     setError("")
     const result = await login(email, password)
@@ -87,7 +87,7 @@ function LoginPage() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@domicoop.com"
+              placeholder="Admin email"
               required
               className={authInputCls}
             />
