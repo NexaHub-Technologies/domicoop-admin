@@ -682,7 +682,7 @@ function DashboardPage() {
                       REQ #{loan.id}
                     </p>
                     <p className="text-sm font-medium text-[#191c1e] dark:text-white">
-                      ${loan.amount.toLocaleString()}.00{" "}
+                      ${(loan.amount ?? 0).toLocaleString()}.00{" "}
                       {loan.type.charAt(0).toUpperCase() + loan.type.slice(1)}
                     </p>
                     <p className="text-[10px] text-slate-500 dark:text-slate-400">
