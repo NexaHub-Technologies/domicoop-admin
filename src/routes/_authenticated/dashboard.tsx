@@ -165,6 +165,7 @@ function DashboardPage() {
   const [summary, setSummary] = useState<ReportSummary | null>(null)
   const [members, setMembers] = useState<Member[]>([])
   const [pendingLoansList, setPendingLoansList] = useState<Loan[]>([])
+  const [pendingLoansTotal, setPendingLoansTotal] = useState<number>(0)
   const [contributions, setContributions] = useState<Contribution[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -190,6 +191,7 @@ function DashboardPage() {
       setSummary(summaryData)
       setMembers(membersData.data)
       setPendingLoansList(loansData.data)
+      setPendingLoansTotal(loansData.total ?? loansData.data.length)
       setContributions(contributionsData.data)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load dashboard data")
@@ -293,7 +295,7 @@ function DashboardPage() {
   const totalMembers = summary?.summary.total_members ?? 0
   const totalContributionsNaira = summary?.contributions.total ?? 0
   const dividendsPaid = summary?.dividends.total_paid ?? 0
-  const pendingLoanCount = pendingLoansList.length
+  const pendingLoanCount = pendingLoansTotal
   const activityList = useMemo(
     () => contributions.slice(0, 6).map(mapContributionActivity),
     [contributions],
@@ -669,7 +671,7 @@ function DashboardPage() {
               {pendingLoansList.length === 0 ? (
                 <p className="text-sm text-slate-500">No pending loans</p>
               ) : (
-                pendingLoansList.slice(0, 2).map((loan, index) => (
+                pendingLoansList.map((loan, index) => (
                   <div
                     key={loan.id}
                     className={`rounded-xl border border-slate-50 p-3 shadow-sm sm:p-4 dark:border-slate-700 ${
