@@ -683,7 +683,7 @@ function DashboardPage() {
                     </p>
                     <p className="text-sm font-medium text-[#191c1e] dark:text-white">
                       ${(loan.amount ?? 0).toLocaleString()}.00{" "}
-                      {loan.type.charAt(0).toUpperCase() + loan.type.slice(1)}
+                      {loan.type ? loan.type.charAt(0).toUpperCase() + loan.type.slice(1) : "Loan"}
                     </p>
                     <p className="text-[10px] text-slate-500 dark:text-slate-400">
                       By: {loan.member_name}
