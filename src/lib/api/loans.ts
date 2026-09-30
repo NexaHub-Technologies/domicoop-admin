@@ -56,4 +56,18 @@ export const loansApi = {
       method: "POST",
     })
   },
+
+  /**
+   * Finalize an OTP-gated transfer with the code Paystack sent to the
+   * business phone. The loan must be approved with a stored pending transfer.
+   */
+  finalizeDisbursement: async (
+    id: string,
+    otp: string
+  ): Promise<DisburseResult> => {
+    return authedRequest<DisburseResult>(`/v1/loans/${id}/disburse/finalize`, {
+      method: "POST",
+      body: { otp },
+    })
+  },
 }

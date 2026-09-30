@@ -153,6 +153,16 @@ export function useDisburseLoan() {
   })
 }
 
+/** Finalize an OTP-gated transfer from the Enter-OTP modal. */
+export function useFinalizeDisbursement() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, otp }: { id: string; otp: string }) =>
+      loansApi.finalizeDisbursement(id, otp),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["loans"] }),
+  })
+}
+
 // ---------------------------------------------------------- contributions --
 
 export function useContributions(page: number, limit: number, year?: number) {

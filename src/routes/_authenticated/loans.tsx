@@ -6,6 +6,7 @@ import {
   useProcessLoan,
   useSignLoan,
   useDisburseLoan,
+  useFinalizeDisbursement,
 } from "../../lib/queries"
 import { createColumnHelper } from "@tanstack/react-table"
 import { DataTable, dataTableFeatures } from "../../components/data-table"
@@ -81,6 +82,7 @@ function useLoanColumns(
   onReview: (l: Loan) => void,
   onReject: (id: string) => void,
   onDisburse: (id: string) => void,
+  onOtp: (id: string) => void,
   busyId: string | null | undefined
 ) {
   return useMemo(
@@ -172,14 +174,25 @@ function useLoanColumns(
                     </Button>
                   </>
                 )}
-                {loan.status === "approved" && (
+                {(loan.status === "approved" ||
+                  loan.status === "disbursement_failed") &&
+                  !loan.paystack_transfer_ref && (
+                    <Button
+                      size="sm"
+                      onClick={() => onDisburse(loan.id)}
+                      disabled={busyId === loan.id}
+                      className="bg-green-600 px-2 text-xs hover:bg-green-700 sm:px-3"
+                    >
+                      {busyId === loan.id ? "Disbursing…" : "Disburse"}
+                    </Button>
+                  )}
+                {loan.status === "approved" && loan.paystack_transfer_ref && (
                   <Button
                     size="sm"
-                    onClick={() => onDisburse(loan.id)}
-                    disabled={busyId === loan.id}
-                    className="bg-green-600 px-2 text-xs hover:bg-green-700 sm:px-3"
+                    onClick={() => onOtp(loan.id)}
+                    className="bg-amber-600 px-2 text-xs hover:bg-amber-700 sm:px-3"
                   >
-                    {busyId === loan.id ? "Disbursing…" : "Disburse"}
+                    Enter OTP
                   </Button>
                 )}
               </div>
@@ -187,7 +200,7 @@ function useLoanColumns(
           },
         }),
       ]),
-    [onReview, onReject, onDisburse, busyId]
+    [onReview, onReject, onDisburse, onOtp, busyId]
   )
 }
 
@@ -197,6 +210,7 @@ function LoansPage() {
   const [filter, setFilter] = useState<StatusFilter>("all")
   const [page, setPage] = useState(1)
   const [processing, setProcessing] = useState<Loan | null>(null)
+  const [otpLoanId, setOtpLoanId] = useState<string | null>(null)
   const [toast, setToast] = useState<{
     message: string
     type: "success" | "error"
@@ -226,6 +240,7 @@ function LoansPage() {
   const processLoan = useProcessLoan()
   const signLoan = useSignLoan()
   const disburseLoan = useDisburseLoan()
+  const finalizeLoan = useFinalizeDisbursement()
   const busyId = disburseLoan.isPending ? disburseLoan.variables : null
 
   useEffect(() => {
@@ -259,6 +274,7 @@ function LoansPage() {
     (l) => setProcessing(l),
     (id) => handleQuickProcess(id, "rejected"),
     (id) => handleDisburse(id),
+    (id) => setOtpLoanId(id),
     busyId
   )
 
@@ -306,13 +322,37 @@ function LoansPage() {
       if (res.status === "disbursed") {
         showToast("Loan disbursed successfully.", "success")
       } else if (res.status === "pending_otp") {
-        showToast(res.message || "Awaiting OTP confirmation.", "success")
+        showToast(
+          "Paystack sent an OTP to the business phone. Enter it to complete the transfer.",
+          "success"
+        )
+        setOtpLoanId(id)
       } else {
         showToast(res.message || "Disbursement failed.", "error")
       }
     } catch (err) {
       showToast(
         err instanceof ApiError ? err.message : "Failed to disburse",
+        "error"
+      )
+    }
+  }
+
+  const handleFinalizeOtp = async (id: string, otp: string) => {
+    try {
+      const res = await finalizeLoan.mutateAsync({ id, otp })
+      if (res.status === "disbursed") {
+        showToast("Loan disbursed successfully.", "success")
+        setOtpLoanId(null)
+      } else if (res.status === "pending_otp") {
+        showToast(res.message || "Transfer still pending.", "success")
+      } else {
+        showToast(res.message || "Disbursement failed.", "error")
+        setOtpLoanId(null)
+      }
+    } catch (err) {
+      showToast(
+        err instanceof ApiError ? err.message : "Failed to finalize",
         "error"
       )
     }
@@ -470,6 +510,86 @@ function LoansPage() {
           onSign={(data) => handleSign(processing.id, data)}
         />
       )}
+
+      {otpLoanId && (
+        <EnterOtpModal
+          loanId={otpLoanId}
+          busy={finalizeLoan.isPending}
+          onClose={() => setOtpLoanId(null)}
+          onConfirm={(otp) => handleFinalizeOtp(otpLoanId, otp)}
+        />
+      )}
+    </div>
+  )
+}
+
+/**
+ * Enter the Paystack OTP sent to the business phone to complete a
+ * disbursement transfer that came back as pending_otp.
+ */
+function EnterOtpModal({
+  loanId,
+  busy,
+  onClose,
+  onConfirm,
+}: {
+  loanId: string
+  busy: boolean
+  onClose: () => void
+  onConfirm: (otp: string) => void
+}) {
+  const [otp, setOtp] = useState("")
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl dark:bg-[#0b1326]">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-lg font-bold text-[#191c1e] dark:text-white">
+            Enter transfer OTP
+          </h3>
+          <button
+            onClick={onClose}
+            className="rounded-full p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <HugeiconsIcon icon={CancelSquareIcon} className="h-5 w-5" />
+          </button>
+        </div>
+        <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">
+          Paystack sent a one-time code to the business phone for loan REQ #
+          {loanId.slice(0, 8)}. Enter it below to complete the transfer — it
+          expires in about 30 minutes.
+        </p>
+        <label className="mb-1 block text-xs font-semibold text-slate-500">
+          OTP
+        </label>
+        <input
+          type="text"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 10))}
+          placeholder="123456"
+          className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-center text-lg tracking-[0.3em] disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+        />
+        <div className="mt-4 flex justify-end gap-2">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={onClose}
+            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold disabled:opacity-50 dark:border-slate-700 dark:text-white"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            disabled={busy || otp.length === 0}
+            onClick={() => onConfirm(otp)}
+            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+          >
+            {busy ? "Confirming…" : "Confirm transfer"}
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
