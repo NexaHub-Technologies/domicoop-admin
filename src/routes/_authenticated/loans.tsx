@@ -80,7 +80,8 @@ const helper = createColumnHelper<typeof dataTableFeatures, Loan>()
 function useLoanColumns(
   onReview: (l: Loan) => void,
   onReject: (id: string) => void,
-  onDisburse: (loan: Loan) => void
+  onDisburse: (id: string) => void,
+  busyId: string | null | undefined
 ) {
   return useMemo(
     () =>
@@ -174,10 +175,11 @@ function useLoanColumns(
                 {loan.status === "approved" && (
                   <Button
                     size="sm"
-                    onClick={() => onDisburse(loan)}
+                    onClick={() => onDisburse(loan.id)}
+                    disabled={busyId === loan.id}
                     className="bg-green-600 px-2 text-xs hover:bg-green-700 sm:px-3"
                   >
-                    Disburse
+                    {busyId === loan.id ? "Disbursing…" : "Disburse"}
                   </Button>
                 )}
               </div>
@@ -185,7 +187,7 @@ function useLoanColumns(
           },
         }),
       ]),
-    [onReview, onReject, onDisburse]
+    [onReview, onReject, onDisburse, busyId]
   )
 }
 
@@ -195,7 +197,6 @@ function LoansPage() {
   const [filter, setFilter] = useState<StatusFilter>("all")
   const [page, setPage] = useState(1)
   const [processing, setProcessing] = useState<Loan | null>(null)
-  const [disbursing, setDisbursing] = useState<Loan | null>(null)
   const [toast, setToast] = useState<{
     message: string
     type: "success" | "error"
@@ -225,6 +226,7 @@ function LoansPage() {
   const processLoan = useProcessLoan()
   const signLoan = useSignLoan()
   const disburseLoan = useDisburseLoan()
+  const busyId = disburseLoan.isPending ? disburseLoan.variables : null
 
   useEffect(() => {
     setPage(1)
@@ -256,7 +258,8 @@ function LoansPage() {
   const columns = useLoanColumns(
     (l) => setProcessing(l),
     (id) => handleQuickProcess(id, "rejected"),
-    (l) => setDisbursing(l)
+    (id) => handleDisburse(id),
+    busyId
   )
 
   const handleSign = async (id: string, data: SignLoanInput) => {
@@ -302,10 +305,8 @@ function LoansPage() {
       const res = await disburseLoan.mutateAsync(id)
       if (res.status === "disbursed") {
         showToast("Loan disbursed successfully.", "success")
-        setDisbursing(null)
       } else if (res.status === "pending_otp") {
         showToast(res.message || "Awaiting OTP confirmation.", "success")
-        setDisbursing(null)
       } else {
         showToast(res.message || "Disbursement failed.", "error")
       }
@@ -469,15 +470,6 @@ function LoansPage() {
           onSign={(data) => handleSign(processing.id, data)}
         />
       )}
-
-      {disbursing && (
-        <DisburseLoanModal
-          loan={disbursing}
-          busy={disburseLoan.isPending}
-          onClose={() => setDisbursing(null)}
-          onConfirm={() => handleDisburse(disbursing.id)}
-        />
-      )}
     </div>
   )
 }
@@ -505,203 +497,6 @@ function StatCard({
         </h3>
       </CardContent>
     </Card>
-  )
-}
-
-/**
- * Manual disbursement: shows who to pay and where, so the admin can transfer
- * via their bank app and then mark the loan disbursed.
- */
-function DisburseLoanModal({
-  loan,
-  busy,
-  onClose,
-  onConfirm,
-}: {
-  loan: Loan
-  busy: boolean
-  onClose: () => void
-  onConfirm: () => void
-}) {
-  const detailQuery = useLoanDetail(loan.id)
-  const detail = detailQuery.data ?? null
-  const loading = detailQuery.isPending
-  const [copied, setCopied] = useState<string | null>(null)
-
-  const amount = loan.amount_approved ?? loan.amount_requested
-  const bankName = detail?.applicant_bank_name ?? "—"
-  const accountNo = detail?.applicant_bank_account ?? "—"
-  const accountName = loanMemberName(loan)
-
-  const copy = async (label: string, value: string) => {
-    if (!value || value === "—") return
-    try {
-      await navigator.clipboard.writeText(value)
-    } catch {
-      const ta = document.createElement("textarea")
-      ta.value = value
-      document.body.appendChild(ta)
-      ta.select()
-      document.execCommand("copy")
-      document.body.removeChild(ta)
-    }
-    setCopied(label)
-    setTimeout(() => setCopied(null), 1500)
-  }
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-6 shadow-xl dark:bg-[#0b1326]">
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-lg font-bold text-[#191c1e] dark:text-white">
-            Manual disbursement — {accountName}
-          </h3>
-          <button
-            onClick={onClose}
-            className="rounded-full p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-          >
-            <HugeiconsIcon icon={CancelSquareIcon} className="h-5 w-5" />
-          </button>
-        </div>
-
-        {loading ? (
-          <div className="space-y-4 py-2">
-            <CardSkeleton cards={2} lines={3} />
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <div className="rounded-lg bg-green-50 p-4 text-center dark:bg-green-900/20">
-              <p className="text-xs font-bold tracking-wider text-green-700 uppercase dark:text-green-300">
-                Amount to transfer
-              </p>
-              <p className="text-3xl font-extrabold text-[#191c1e] dark:text-white">
-                {formatNaira(amount)}
-              </p>
-              <p className="mt-1 text-xs text-slate-500">
-                {loanMemberNo(loan)} · {loan.type} · REQ #{loan.id.slice(0, 8)}
-              </p>
-            </div>
-
-            <Section title="Send to">
-              <div className="col-span-2 space-y-3">
-                <div className="flex items-center justify-between gap-2 rounded border border-slate-100 p-3 dark:border-slate-800">
-                  <div>
-                    <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                      Bank
-                    </p>
-                    <p className="text-sm font-semibold text-[#191c1e] dark:text-white">
-                      {bankName}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => copy("bank", bankName)}
-                    className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-300"
-                  >
-                    {copied === "bank" ? "Copied" : "Copy"}
-                  </button>
-                </div>
-                <div className="flex items-center justify-between gap-2 rounded border border-slate-100 p-3 dark:border-slate-800">
-                  <div>
-                    <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                      Account number
-                    </p>
-                    <p className="text-sm font-semibold text-[#191c1e] dark:text-white">
-                      {accountNo}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => copy("account", accountNo)}
-                    className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-300"
-                  >
-                    {copied === "account" ? "Copied" : "Copy"}
-                  </button>
-                </div>
-                <div className="flex items-center justify-between gap-2 rounded border border-slate-100 p-3 dark:border-slate-800">
-                  <div>
-                    <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                      Account name
-                    </p>
-                    <p className="text-sm font-semibold text-[#191c1e] dark:text-white">
-                      {accountName}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => copy("name", accountName)}
-                    className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-300"
-                  >
-                    {copied === "name" ? "Copied" : "Copy"}
-                  </button>
-                </div>
-                <div className="flex items-center justify-between gap-2 rounded border border-slate-100 p-3 dark:border-slate-800">
-                  <div>
-                    <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                      Amount
-                    </p>
-                    <p className="text-sm font-semibold text-[#191c1e] dark:text-white">
-                      {formatNaira(amount)}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => copy("amount", String(amount))}
-                    className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-300"
-                  >
-                    {copied === "amount" ? "Copied" : "Copy"}
-                  </button>
-                </div>
-              </div>
-            </Section>
-
-            <Section title="Loan">
-              <Detail
-                label="Requested"
-                value={formatNaira(loan.amount_requested)}
-              />
-              <Detail
-                label="Purpose"
-                value={loan.purpose || "—"}
-              />
-              <Detail
-                label="Phone"
-                value={detail?.applicant_phone ?? "—"}
-              />
-              <Detail
-                label="Address"
-                value={detail?.applicant_address ?? "—"}
-              />
-            </Section>
-
-            <p className="rounded bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:bg-amber-900/20 dark:text-amber-300">
-              Transfer {formatNaira(amount)} to the account above via your
-              bank app, then return here and confirm so the loan is marked
-              disbursed.
-            </p>
-
-            <div className="flex flex-wrap justify-end gap-2 border-t border-slate-100 pt-4 dark:border-slate-800">
-              <button
-                type="button"
-                disabled={busy}
-                onClick={onClose}
-                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold disabled:opacity-50 dark:border-slate-700 dark:text-white"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={onConfirm}
-                disabled={busy || loading}
-                className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
-              >
-                {busy ? "Marking disbursed…" : "I have sent it — Mark disbursed"}
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
   )
 }
 
