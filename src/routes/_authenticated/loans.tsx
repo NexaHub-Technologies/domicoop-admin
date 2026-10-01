@@ -29,6 +29,13 @@ import { useAuth } from "../../providers/auth-provider"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { CardSkeleton } from "@/components/ui/table-skeleton"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
@@ -84,6 +91,7 @@ function useLoanColumns(
   onReject: (id: string) => void,
   onDisburse: (id: string) => void,
   onOtp: (id: string) => void,
+  onView: (l: Loan) => void,
   busyId: string | null | undefined
 ) {
   return useMemo(
@@ -155,6 +163,14 @@ function useLoanColumns(
             const loan = row.original
             return (
               <div className="flex justify-end gap-1 sm:gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onView(loan)}
+                  className="px-2 text-xs sm:px-3"
+                >
+                  View
+                </Button>
                 {(loan.status === "pending" ||
                   loan.status === "under_review") && (
                   <>
@@ -201,7 +217,7 @@ function useLoanColumns(
           },
         }),
       ]),
-    [onReview, onReject, onDisburse, onOtp, busyId]
+    [onReview, onReject, onDisburse, onOtp, onView, busyId]
   )
 }
 
@@ -212,6 +228,7 @@ function LoansPage() {
   const [page, setPage] = useState(1)
   const [processing, setProcessing] = useState<Loan | null>(null)
   const [otpLoanId, setOtpLoanId] = useState<string | null>(null)
+  const [details, setDetails] = useState<Loan | null>(null)
   const [toast, setToast] = useState<{
     message: string
     type: "success" | "error"
@@ -277,6 +294,7 @@ function LoansPage() {
     (id) => handleQuickProcess(id, "rejected"),
     (id) => handleDisburse(id),
     (id) => setOtpLoanId(id),
+    (l) => setDetails(l),
     busyId
   )
 
@@ -535,6 +553,10 @@ function LoansPage() {
           onResend={() => handleResendOtp(otpLoanId)}
         />
       )}
+
+      {details && (
+        <LoanDetailsDialog loan={details} onClose={() => setDetails(null)} />
+      )}
     </div>
   )
 }
@@ -622,6 +644,145 @@ function EnterOtpModal({
         </div>
       </div>
     </div>
+  )
+}
+
+/**
+ * Read-only loan details in a dialog — available for every row regardless of
+ * status, unlike the review panel which only handles pending applications.
+ */
+function LoanDetailsDialog({
+  loan,
+  onClose,
+}: {
+  loan: Loan
+  onClose: () => void
+}) {
+  const detailQuery = useLoanDetail(loan.id)
+  const detail = detailQuery.data ?? null
+  const loading = detailQuery.isPending
+
+  const installments = detail?.loan_installments ?? []
+  const paid = installments.reduce((sum, i) => sum + Number(i.paid_amount), 0)
+  const fmtDate = (iso: string | null) =>
+    iso ? new Date(iso).toLocaleDateString() : "—"
+
+  return (
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose()
+      }}
+    >
+      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>
+            Loan details — {loanMemberName(loan)}
+          </DialogTitle>
+          <DialogDescription>
+            REQ #{loan.id.slice(0, 8)} · {loanMemberNo(loan)} · {loan.type}
+          </DialogDescription>
+        </DialogHeader>
+
+        {loading ? (
+          <CardSkeleton cards={3} lines={3} />
+        ) : (
+          <div className="space-y-4">
+            <Section title="Loan">
+              <Detail
+                label="Requested"
+                value={formatNaira(loan.amount_requested)}
+              />
+              <Detail
+                label="Approved"
+                value={
+                  loan.amount_approved != null
+                    ? formatNaira(loan.amount_approved)
+                    : "—"
+                }
+              />
+              <Detail label="Purpose" value={loan.purpose || "—"} />
+              <Detail
+                label="Status"
+                value={loan.status.replace("_", " ")}
+              />
+            </Section>
+
+            <Section title="Terms">
+              <Detail
+                label="Interest rate"
+                value={
+                  loan.interest_rate != null
+                    ? `${loan.interest_rate}%`
+                    : "—"
+                }
+              />
+              <Detail
+                label="Tenure"
+                value={
+                  loan.tenure_months != null
+                    ? `${loan.tenure_months} mo`
+                    : "—"
+                }
+              />
+              <Detail
+                label="Monthly repayment"
+                value={
+                  loan.monthly_repayment != null
+                    ? formatNaira(Number(loan.monthly_repayment))
+                    : "—"
+                }
+              />
+              <Detail
+                label="Balance"
+                value={
+                  loan.balance != null
+                    ? formatNaira(Number(loan.balance))
+                    : "—"
+                }
+              />
+              <Detail
+                label="Disbursed"
+                value={fmtDate(loan.disbursed_at)}
+              />
+              <Detail label="Due" value={fmtDate(loan.due_date)} />
+            </Section>
+
+            <Section title="Applicant">
+              <Detail
+                label="Phone"
+                value={detail?.applicant_phone ?? "—"}
+              />
+              <Detail
+                label="Address"
+                value={detail?.applicant_address ?? "—"}
+              />
+              <Detail
+                label="Bank"
+                value={detail?.applicant_bank_name ?? "—"}
+              />
+              <Detail
+                label="Account"
+                value={detail?.applicant_bank_account ?? "—"}
+              />
+            </Section>
+
+            {installments.length > 0 && (
+              <Section title={`Repayments (${installments.length})`}>
+                <Detail
+                  label="Paid so far"
+                  value={formatNaira(paid)}
+                />
+                <Detail
+                  label="Installments paid"
+                  value={`${installments.filter((i) => i.status === "paid").length} / ${installments.length}`}
+                />
+              </Section>
+            )}
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
   )
 }
 
