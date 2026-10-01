@@ -24,7 +24,6 @@ import { Route as AuthenticatedInventoryRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDividendsRouteImport } from './routes/_authenticated/dividends'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedContributionsRouteImport } from './routes/_authenticated/contributions'
-import { Route as AuthenticatedCommunicationsRouteImport } from './routes/_authenticated/communications'
 import { Route as AuthenticatedAnnouncementsRouteImport } from './routes/_authenticated/announcements'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedMembersMemberIdRouteImport } from './routes/_authenticated/members/$memberId'
@@ -105,12 +104,6 @@ const AuthenticatedContributionsRoute =
     path: '/contributions',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedCommunicationsRoute =
-  AuthenticatedCommunicationsRouteImport.update({
-    id: '/communications',
-    path: '/communications',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedAnnouncementsRoute =
   AuthenticatedAnnouncementsRouteImport.update({
     id: '/announcements',
@@ -136,7 +129,6 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/announcements': typeof AuthenticatedAnnouncementsRoute
-  '/communications': typeof AuthenticatedCommunicationsRoute
   '/contributions': typeof AuthenticatedContributionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dividends': typeof AuthenticatedDividendsRoute
@@ -156,7 +148,6 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/announcements': typeof AuthenticatedAnnouncementsRoute
-  '/communications': typeof AuthenticatedCommunicationsRoute
   '/contributions': typeof AuthenticatedContributionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dividends': typeof AuthenticatedDividendsRoute
@@ -178,7 +169,6 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/announcements': typeof AuthenticatedAnnouncementsRoute
-  '/_authenticated/communications': typeof AuthenticatedCommunicationsRoute
   '/_authenticated/contributions': typeof AuthenticatedContributionsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dividends': typeof AuthenticatedDividendsRoute
@@ -200,7 +190,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/analytics'
     | '/announcements'
-    | '/communications'
     | '/contributions'
     | '/dashboard'
     | '/dividends'
@@ -220,7 +209,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/analytics'
     | '/announcements'
-    | '/communications'
     | '/contributions'
     | '/dashboard'
     | '/dividends'
@@ -241,7 +229,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/_authenticated/analytics'
     | '/_authenticated/announcements'
-    | '/_authenticated/communications'
     | '/_authenticated/contributions'
     | '/_authenticated/dashboard'
     | '/_authenticated/dividends'
@@ -370,13 +357,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedContributionsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/communications': {
-      id: '/_authenticated/communications'
-      path: '/communications'
-      fullPath: '/communications'
-      preLoaderRoute: typeof AuthenticatedCommunicationsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/announcements': {
       id: '/_authenticated/announcements'
       path: '/announcements'
@@ -415,7 +395,6 @@ const AuthenticatedMembersRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedAnnouncementsRoute: typeof AuthenticatedAnnouncementsRoute
-  AuthenticatedCommunicationsRoute: typeof AuthenticatedCommunicationsRoute
   AuthenticatedContributionsRoute: typeof AuthenticatedContributionsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDividendsRoute: typeof AuthenticatedDividendsRoute
@@ -431,7 +410,6 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedAnnouncementsRoute: AuthenticatedAnnouncementsRoute,
-  AuthenticatedCommunicationsRoute: AuthenticatedCommunicationsRoute,
   AuthenticatedContributionsRoute: AuthenticatedContributionsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDividendsRoute: AuthenticatedDividendsRoute,

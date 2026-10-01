@@ -7,7 +7,6 @@ import {
   UserGroupIcon,
   MoneySend01Icon,
   BankIcon,
-  Message02Icon,
   Settings01Icon,
   Logout01Icon,
   AddCircleIcon,
@@ -41,7 +40,6 @@ const navItems = [
   { label: "Contributions", path: "/contributions", icon: MoneySend01Icon },
   { label: "Loans", path: "/loans", icon: BankIcon },
   { label: "Dividends", path: "/dividends", icon: Coins01Icon },
-  { label: "Communications", path: "/communications", icon: Message02Icon },
   { label: "Announcements", path: "/announcements", icon: Megaphone01Icon },
   { label: "Settings", path: "/settings", icon: Settings01Icon },
 ]
