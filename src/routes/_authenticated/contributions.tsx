@@ -14,6 +14,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
   useContributions,
   useUpdateContributionStatus,
 } from "../../lib/queries"
@@ -123,6 +130,176 @@ function useContributionColumns(onReview: (c: Contribution) => void) {
         }),
       ]),
     [onReview]
+  )
+}
+
+/**
+ * Review a member contribution and confirm its payment outcome.
+ *
+ * Shows who paid, what period it covers, how the amount splits across the
+ * allocation buckets, and the payment trail — then offers the four
+ * settlement states. The current status is marked so the admin can see at
+ * a glance whether anything still needs doing.
+ */
+function ReviewContributionDialog({
+  contribution: c,
+  busy,
+  onClose,
+  onSetStatus,
+}: {
+  contribution: Contribution
+  busy: boolean
+  onClose: () => void
+  onSetStatus: (s: ContributionStatus) => void
+}) {
+  const buckets = [
+    { label: "Shares", value: c.shares },
+    { label: "Social", value: c.social },
+    { label: "Savings", value: c.savings },
+    { label: "Deposit", value: c.deposit },
+  ]
+
+  return (
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose()
+      }}
+    >
+      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Review contribution</DialogTitle>
+          <DialogDescription>
+            {contributionMemberName(c)} · {contributionMemberNo(c)} ·{" "}
+            {c.month} {c.year}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="rounded-lg bg-[#003d9a]/5 p-4 text-center dark:bg-[#b2c5ff]/10">
+          <p className="text-xs font-bold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+            Amount paid
+          </p>
+          <p className="text-3xl font-extrabold text-[#191c1e] dark:text-white">
+            {formatNaira(Number(c.amount))}
+          </p>
+          <div className="mt-2 flex justify-center">
+            <Badge
+              variant="outline"
+              className={`text-[10px] font-black uppercase ${statusStyles[c.payment_status] ?? ""}`}
+            >
+              {c.payment_status}
+            </Badge>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+              Method
+            </p>
+            <p className="text-[#191c1e] capitalize dark:text-white">
+              {c.payment_method ?? "—"}
+            </p>
+          </div>
+          <div>
+            <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+              Paid on
+            </p>
+            <p className="text-[#191c1e] dark:text-white">
+              {new Date(c.created_at).toLocaleDateString()}
+            </p>
+          </div>
+          {c.member_email && (
+            <div className="col-span-2">
+              <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                Payer email
+              </p>
+              <p className="text-[#191c1e] break-all dark:text-white">
+                {c.member_email}
+              </p>
+            </div>
+          )}
+          {c.transaction_ref && (
+            <div className="col-span-2">
+              <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                Transaction ref
+              </p>
+              <p className="font-mono text-xs break-all text-slate-600 dark:text-slate-300">
+                {c.transaction_ref}
+              </p>
+            </div>
+          )}
+          {c.notes && (
+            <div className="col-span-2">
+              <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                Notes
+              </p>
+              <p className="text-[#191c1e] dark:text-white">{c.notes}</p>
+            </div>
+          )}
+        </div>
+
+        {buckets.some((b) => b.value != null) && (
+          <div>
+            <p className="mb-2 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+              Allocation
+            </p>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {buckets.map((b) => (
+                <div
+                  key={b.label}
+                  className="rounded-lg border border-slate-100 p-2 text-center dark:border-slate-800"
+                >
+                  <p className="text-[10px] font-semibold text-slate-400 uppercase">
+                    {b.label}
+                  </p>
+                  <p className="text-sm font-bold text-[#191c1e] dark:text-white">
+                    {b.value != null ? formatNaira(Number(b.value)) : "—"}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div>
+          <p className="mb-2 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+            Set status
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {(
+              [
+                "success",
+                "pending",
+                "failed",
+                "abandoned",
+              ] as ContributionStatus[]
+            ).map((s) => (
+              <button
+                key={s}
+                onClick={() => onSetStatus(s)}
+                disabled={busy || c.payment_status === s}
+                className={`rounded-lg py-2 text-sm font-semibold capitalize transition-colors disabled:opacity-50 ${
+                  s === "success"
+                    ? "bg-green-600 text-white hover:brightness-110"
+                    : s === "failed"
+                      ? "bg-red-600 text-white hover:brightness-110"
+                      : "border border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                } ${c.payment_status === s ? "ring-2 ring-offset-1 ring-[#003d9a]/40" : ""}`}
+              >
+                {busy ? "Saving…" : s}
+              </button>
+            ))}
+          </div>
+          {c.payment_status !== "pending" && c.payment_status !== "failed" && (
+            <p className="mt-2 text-xs text-slate-400">
+              Current status is {c.payment_status} — changing it should be
+              deliberate.
+            </p>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -397,66 +574,14 @@ function ContributionsPage() {
         </div>
       </div>
 
-      {/* Review modal */}
+      {/* Review dialog */}
       {reviewing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl dark:bg-[#0b1326]">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-[#191c1e] dark:text-white">
-                Review Contribution
-              </h3>
-              <button
-                onClick={() => setReviewing(null)}
-                className="rounded-full p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-              >
-                <HugeiconsIcon icon={CancelSquareIcon} className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="mb-4 space-y-1 text-sm">
-              <p className="font-bold text-[#191c1e] dark:text-white">
-                {contributionMemberName(reviewing)} ·{" "}
-                {contributionMemberNo(reviewing)}
-              </p>
-              <p className="text-slate-500 dark:text-slate-400">
-                {formatNaira(reviewing.amount)} · {reviewing.month}{" "}
-                {reviewing.year}
-              </p>
-              {reviewing.transaction_ref && (
-                <p className="text-xs text-slate-400">
-                  Ref: {reviewing.transaction_ref}
-                </p>
-              )}
-            </div>
-            <p className="mb-2 text-xs font-semibold text-slate-500">
-              Set status
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {(
-                [
-                  "success",
-                  "pending",
-                  "failed",
-                  "abandoned",
-                ] as ContributionStatus[]
-              ).map((s) => (
-                <button
-                  key={s}
-                  onClick={() => handleUpdateStatus(reviewing.id, s)}
-                  disabled={isPending(reviewing.id)}
-                  className={`rounded-lg py-2 text-sm font-semibold capitalize transition-colors disabled:opacity-50 ${
-                    s === "success"
-                      ? "bg-green-600 text-white hover:brightness-110"
-                      : s === "failed"
-                        ? "bg-red-600 text-white hover:brightness-110"
-                        : "border border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+        <ReviewContributionDialog
+          contribution={reviewing}
+          busy={isPending(reviewing.id)}
+          onClose={() => setReviewing(null)}
+          onSetStatus={(s) => handleUpdateStatus(reviewing.id, s)}
+        />
       )}
     </div>
   )
