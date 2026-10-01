@@ -163,6 +163,15 @@ export function useFinalizeDisbursement() {
   })
 }
 
+/** Resend the transfer OTP from the Enter-OTP modal. */
+export function useResendDisbursementOtp() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => loansApi.resendDisbursementOtp(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["loans"] }),
+  })
+}
+
 // ---------------------------------------------------------- contributions --
 
 export function useContributions(page: number, limit: number, year?: number) {

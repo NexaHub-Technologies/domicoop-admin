@@ -7,6 +7,7 @@ import {
   useSignLoan,
   useDisburseLoan,
   useFinalizeDisbursement,
+  useResendDisbursementOtp,
 } from "../../lib/queries"
 import { createColumnHelper } from "@tanstack/react-table"
 import { DataTable, dataTableFeatures } from "../../components/data-table"
@@ -241,6 +242,7 @@ function LoansPage() {
   const signLoan = useSignLoan()
   const disburseLoan = useDisburseLoan()
   const finalizeLoan = useFinalizeDisbursement()
+  const resendOtp = useResendDisbursementOtp()
   const busyId = disburseLoan.isPending ? disburseLoan.variables : null
 
   useEffect(() => {
@@ -353,6 +355,18 @@ function LoansPage() {
     } catch (err) {
       showToast(
         err instanceof ApiError ? err.message : "Failed to finalize",
+        "error"
+      )
+    }
+  }
+
+  const handleResendOtp = async (id: string) => {
+    try {
+      const res = await resendOtp.mutateAsync(id)
+      showToast(res.message || "A fresh OTP has been sent.", "success")
+    } catch (err) {
+      showToast(
+        err instanceof ApiError ? err.message : "Failed to resend OTP",
         "error"
       )
     }
@@ -515,8 +529,10 @@ function LoansPage() {
         <EnterOtpModal
           loanId={otpLoanId}
           busy={finalizeLoan.isPending}
+          resending={resendOtp.isPending}
           onClose={() => setOtpLoanId(null)}
           onConfirm={(otp) => handleFinalizeOtp(otpLoanId, otp)}
+          onResend={() => handleResendOtp(otpLoanId)}
         />
       )}
     </div>
@@ -530,13 +546,17 @@ function LoansPage() {
 function EnterOtpModal({
   loanId,
   busy,
+  resending,
   onClose,
   onConfirm,
+  onResend,
 }: {
   loanId: string
   busy: boolean
+  resending: boolean
   onClose: () => void
   onConfirm: (otp: string) => void
+  onResend: () => void
 }) {
   const [otp, setOtp] = useState("")
 
@@ -556,8 +576,9 @@ function EnterOtpModal({
         </div>
         <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">
           Paystack sent a one-time code to the business phone for loan REQ #
-          {loanId.slice(0, 8)}. Enter it below to complete the transfer — it
-          expires in about 30 minutes.
+          {loanId.slice(0, 8)}. Enter the newest code below to complete the
+          transfer — it expires in about 30 minutes, and resending invalidates
+          earlier codes.
         </p>
         <label className="mb-1 block text-xs font-semibold text-slate-500">
           OTP
@@ -571,23 +592,33 @@ function EnterOtpModal({
           placeholder="123456"
           className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-center text-lg tracking-[0.3em] disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
         />
-        <div className="mt-4 flex justify-end gap-2">
+        <div className="mt-4 flex items-center justify-between gap-2">
           <button
             type="button"
-            disabled={busy}
-            onClick={onClose}
-            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold disabled:opacity-50 dark:border-slate-700 dark:text-white"
+            disabled={busy || resending}
+            onClick={onResend}
+            className="px-2 py-2 text-sm font-semibold text-[#003d9a] hover:underline disabled:opacity-50 dark:text-[#b2c5ff]"
           >
-            Cancel
+            {resending ? "Sending…" : "Resend code"}
           </button>
-          <button
-            type="button"
-            disabled={busy || otp.length === 0}
-            onClick={() => onConfirm(otp)}
-            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
-          >
-            {busy ? "Confirming…" : "Confirm transfer"}
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onClose}
+              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold disabled:opacity-50 dark:border-slate-700 dark:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={busy || otp.length === 0}
+              onClick={() => onConfirm(otp)}
+              className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+            >
+              {busy ? "Confirming…" : "Confirm transfer"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

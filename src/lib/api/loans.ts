@@ -70,4 +70,15 @@ export const loansApi = {
       body: { otp },
     })
   },
+
+  /**
+   * Resend the transfer OTP to the business phone. Invalidates previously
+   * sent codes — the admin must enter the newest one.
+   */
+  resendDisbursementOtp: async (id: string): Promise<DisburseResult> => {
+    return authedRequest<DisburseResult>(
+      `/v1/loans/${id}/disburse/otp/resend`,
+      { method: "POST" }
+    )
+  },
 }
